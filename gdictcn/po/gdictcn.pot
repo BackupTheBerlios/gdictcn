@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-06-13 11:16+0800\n"
+"POT-Creation-Date: 2005-06-13 16:37+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,26 +16,26 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/interface.c:56
+#: src/interface.c:51
 msgid "dict.cn gtk client"
 msgstr ""
 
-#: src/interface.c:67
+#: src/interface.c:62
 msgid "_Dictionary"
 msgstr ""
 
-#: src/interface.c:74
+#: src/interface.c:69
 msgid "dict.cn"
 msgstr ""
 
-#: src/interface.c:88
+#: src/interface.c:83
 msgid "_Help"
 msgstr ""
 
-#: src/interface.c:95
+#: src/interface.c:90
 msgid "_About"
 msgstr ""
 
-#: src/interface.c:104
+#: src/interface.c:99
 msgid "word : "
 msgstr ""

@@ -42,13 +42,8 @@ create_window1 (void)
   GtkWidget *frame1;
   GtkWidget *scrolledwindow1;
   GtkWidget *text_view;
-  //GtkWidget *statusbar1;
+  GtkWidget *statusbar1;
   GtkAccelGroup *accel_group;
-  GtkWidget * hbox_status;
-  GtkWidget * image_loading;
-  GtkWidget * image_loadingok;
-  gchar * filename_loading;
-  gchar * filename_loadingok;
 
   accel_group = gtk_accel_group_new ();
 
@@ -134,58 +129,28 @@ create_window1 (void)
   gtk_text_view_set_left_margin (GTK_TEXT_VIEW (text_view), 5);
   gtk_text_view_set_right_margin (GTK_TEXT_VIEW (text_view), 5);
 
-  hbox_status = gtk_hbox_new (FALSE, 0);
-  gtk_widget_set_size_request (hbox_status, -1, 20);
-  gtk_widget_show (hbox_status);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox_status, FALSE, FALSE, 1);
-
-  filename_loading = g_build_filename(PIXMAPS_DIR,"loading.gif",NULL);
-  filename_loadingok = g_build_filename(PIXMAPS_DIR,"loading_ok.png",NULL);
-
-  if (filename_loading)
-   {
-    	image_loading = gtk_image_new_from_file(filename_loading);
-      	g_free (filename_loading);
-	dictdata.loading=image_loading;
-  	gtk_box_pack_start (GTK_BOX (hbox_status), image_loading, FALSE, FALSE, 5);
-    } else
-	dictdata.loading=NULL;
-  if (filename_loadingok)
-   {
-    	image_loadingok = gtk_image_new_from_file (filename_loadingok);
-      	g_free (filename_loadingok);
-	dictdata.loadingok=image_loadingok;
-	gtk_widget_show(GTK_WIDGET(image_loadingok));
-  	gtk_box_pack_start (GTK_BOX (hbox_status), image_loadingok, FALSE, FALSE, 5);
-    }else
-	dictdata.loadingok=NULL;
-/*
   statusbar1 = gtk_statusbar_new ();
   gtk_widget_show (statusbar1);
   gtk_box_pack_start (GTK_BOX (vbox1), statusbar1, FALSE, FALSE, 0);
 
-  label_status = gtk_label_new (_("label_status : "));
-  gtk_widget_set_size_request (label_status, -1, 30);
-  gtk_widget_show (label_status);
-  gtk_container_add(GTK_CONTAINER (statusbar1), label_status);
+/*
+  pbar = gtk_progress_bar_new();
+  progressdata.pbar=pbar;
+  progressdata.statusbar=statusbar1;
+  gtk_container_add(GTK_CONTAINER(statusbar1),pbar);
+  gtk_widget_show(pbar);
+  progressdata.timer=g_timeout_add(100,progress_timeout,&progressdata);
 */
+
   dictdata.entry=entry1;
   dictdata.text=text_view;
-  //dictdata.statusbar=statusbar1;
-  //dictdata.contextid=gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar1),"dict.cn");
 
   g_signal_connect_after ((gpointer) window1, "destroy",
                           G_CALLBACK (gtk_main_quit),
                           NULL);
 
   g_signal_connect (GTK_OBJECT(entry1), "activate",
-                    G_CALLBACK (loading_start),
-                    &dictdata);
-  g_signal_connect (GTK_OBJECT(entry1), "activate",
                     G_CALLBACK (find_cb),
-                    &dictdata);
-  g_signal_connect (GTK_OBJECT(entry1), "activate",
-                    G_CALLBACK (loading_stop),
                     &dictdata);
   g_signal_connect ((gpointer) dictcn, "activate",
                     G_CALLBACK (on_dictcn_activate),
@@ -196,9 +161,6 @@ create_window1 (void)
   g_signal_connect ((gpointer) about1, "activate",
                     G_CALLBACK (on_about1_activate),
                     NULL);
-//  g_signal_connect ((gpointer) button1, "clicked",
-//                    G_CALLBACK (update_statusbar),
-//                    &dictdata);
   g_signal_connect ((gpointer) button1, "clicked",
                     G_CALLBACK (find_cb),
                     &dictdata);

@@ -1,3 +1,5 @@
+#ifndef CALLBACKS_H
+#define CALLBACKS_H
 #include <gtk/gtk.h>
 
 
@@ -15,13 +17,4 @@ on_about1_activate                     (GtkMenuItem     *menuitem,
 void
 find_cb					(GtkButton       *button,
                                         gpointer         user_data);
-void
-update_statusbar					(GtkButton       *button,
-                                        gpointer         user_data);
-void
-loading_start				(GtkButton       *button,
-                                        gpointer         user_data);
-void
-loading_stop				(GtkButton       *button,
-                                        gpointer         user_data);
-void display_loading(void *);
+#endif

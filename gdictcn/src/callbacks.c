@@ -86,7 +86,7 @@ on_about1_activate                     (GtkMenuItem     *menuitem,
 			 "version", "0.1",
 			 "copyright", "2005-2006 Dave Young",
 			 "license", license,
-			 "website", "http://dict.cn",
+			 "website", "http://gdictcn.berlios.de",
 			 "comments", "chinese/english dictionary online",
 			 "authors", authors,
 			 "documenters", documentors,
@@ -96,30 +96,8 @@ on_about1_activate                     (GtkMenuItem     *menuitem,
   g_object_unref (transparent);
 }
 
-static void loadimage(dict_data * ddata,gboolean loading_ok)
-{
-	if(loading_ok){
-		if(ddata->loadingok){
-			g_print("loading ok\n");
-			gtk_widget_show(GTK_WIDGET(ddata->loadingok));
-		}
-		if(ddata->loading){
-			gtk_widget_hide(GTK_WIDGET(ddata->loading));
-		}
-	}else{
-		if(ddata->loading){
-			g_print("loading\n");
-			gtk_widget_show(GTK_WIDGET(ddata->loading));
-		}
-		if(ddata->loadingok){
-			gtk_widget_hide(GTK_WIDGET(ddata->loadingok));
-		}
-	}
-}
-
-
 void
-find_cb	(GtkButton       *button, gpointer         user_data)
+find_cb (GtkButton       *button,gpointer user_data)
 {
 	dict_data * ddata;
 	GtkTextBuffer * text_buffer;
@@ -135,34 +113,3 @@ find_cb	(GtkButton       *button, gpointer         user_data)
 	if(result)
 		free(result);
 }
-
-void
-loading_start	(GtkButton       *button, gpointer         user_data)
-{
-	dict_data * ddata;
-	ddata = (dict_data *)user_data;
-	loadimage(ddata,0);
-}
-
-void
-loading_stop	(GtkButton       *button, gpointer         user_data)
-{
-	dict_data * ddata;
-	ddata = (dict_data *)user_data;
-	loadimage(ddata,1);
-}
-/*
-void
-update_statusbar	(GtkButton       *button, gpointer         user_data)
-{
-	dict_data * ddata;
-	ddata = (dict_data *)user_data;
-	gint contextid;
-	gchar *buff;
-
- 	buff = "searching word from http://dict.cn";
-  	contextid=ddata->contextid;
-	gtk_statusbar_pop (GTK_STATUSBAR (ddata->statusbar), contextid);
-	gtk_statusbar_push (GTK_STATUSBAR (ddata->statusbar), contextid, buff);
-}
-*/
