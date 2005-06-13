@@ -1,0 +1,359 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+# fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-06-13 11:16+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/interface.c:56
+msgid "dict.cn gtk client"
+msgstr ""
+
+#: src/interface.c:67
+msgid "_Dictionary"
+msgstr ""
+
+#: src/interface.c:74
+msgid "dict.cn"
+msgstr ""
+
+#: src/interface.c:88
+msgid "_Help"
+msgstr ""
+
+#: src/interface.c:95
+msgid "_About"
+msgstr ""
+
+#: src/interface.c:104
+msgid "word : "
+msgstr ""
+
+#~ msgid "shasha management"
+#~ msgstr "莎莎店面管理程序"
+
+#~ msgid "cashing"
+#~ msgstr "收银"
+
+#~ msgid "manage"
+#~ msgstr "管理"
+
+#~ msgid "exit"
+#~ msgstr "退出"
+
+#~ msgid "productid"
+#~ msgstr "产品编码"
+
+#~ msgid "name"
+#~ msgstr "名称"
+
+#~ msgid "catagary"
+#~ msgstr "类别"
+
+#~ msgid "number"
+#~ msgstr "数量"
+
+#~ msgid "price"
+#~ msgstr "价格"
+
+#~ msgid "desc"
+#~ msgstr "简介"
+
+#~ msgid "cashing window"
+#~ msgstr "收银"
+
+#~ msgid "customer id"
+#~ msgstr "顾客编号"
+
+#~ msgid "product id"
+#~ msgstr "产品编号"
+
+#~ msgid "discount"
+#~ msgstr "打折"
+
+#~ msgid "return"
+#~ msgstr "返回"
+
+#~ msgid "product selling"
+#~ msgstr "销售"
+
+#~ msgid "total"
+#~ msgstr "应收"
+
+#~ msgid "get"
+#~ msgstr "实收"
+
+#~ msgid "remain"
+#~ msgstr "应补"
+
+#~ msgid "unit :"
+#~ msgstr "单位"
+
+#~ msgid "yuan"
+#~ msgstr "元"
+
+#~ msgid "shopping list"
+#~ msgstr "商品列表"
+
+#~ msgid "customer id must be number!"
+#~ msgstr "顾客编号必须是数字"
+
+#~ msgid "database error"
+#~ msgstr "数据库错误"
+
+#~ msgid "there's no this customer record"
+#~ msgstr "没有这位顾客的记录"
+
+#~ msgid "product id must be number!"
+#~ msgstr "产品编号必须是数字"
+
+#~ msgid "product number must be number!"
+#~ msgstr "产品数量必须是数字"
+
+#~ msgid "there's no this product record"
+#~ msgstr "没有这种产品的记录"
+
+#~ msgid "this product is not enough"
+#~ msgstr "库存不足"
+
+#~ msgid "money not enough"
+#~ msgstr "钱不够"
+
+#~ msgid "discount price must be number"
+#~ msgstr "价格必须是数字"
+
+#~ msgid "management system"
+#~ msgstr "管理系统"
+
+#~ msgid "toolbar"
+#~ msgstr "工具栏"
+
+#~ msgid "product"
+#~ msgstr "产品"
+
+#~ msgid "customer"
+#~ msgstr "顾客"
+
+#~ msgid "manufactor"
+#~ msgstr "生产商"
+
+#~ msgid "clerk"
+#~ msgstr "员工"
+
+#~ msgid "cash_inout"
+#~ msgstr "收支"
+
+#~ msgid "sql table"
+#~ msgstr "查询"
+
+#~ msgid "management"
+#~ msgstr "管理"
+
+#~ msgid "welcom to shasha cosmetic!"
+#~ msgstr "欢迎到莎莎购物"
+
+#~ msgid "id"
+#~ msgstr "编号"
+
+#~ msgid "amount"
+#~ msgstr "数量"
+
+#~ msgid "begin"
+#~ msgstr "出厂日期"
+
+#~ msgid "end"
+#~ msgstr "失效日期"
+
+#~ msgid "pricein"
+#~ msgstr "进价"
+
+#~ msgid "priceout"
+#~ msgstr "售价"
+
+#~ msgid "supplyer"
+#~ msgstr "供货商"
+
+#~ msgid "image"
+#~ msgstr "图片"
+
+#~ msgid "manufacture"
+#~ msgstr "生产商"
+
+#~ msgid "H"
+#~ msgstr "化妆品"
+
+#~ msgid "S"
+#~ msgstr "饰品"
+
+#~ msgid "T"
+#~ msgstr "化妆用具"
+
+#~ msgid "unknown"
+#~ msgstr "未知"
+
+#~ msgid "description"
+#~ msgstr "描述"
+
+#~ msgid "phone"
+#~ msgstr "电话"
+
+#~ msgid "workdepart"
+#~ msgstr "工作单位"
+
+#~ msgid "Good"
+#~ msgstr "良好"
+
+#~ msgid "Bad"
+#~ msgstr "差"
+
+#~ msgid "Unknown"
+#~ msgstr "未知"
+
+#~ msgid "credit"
+#~ msgstr "信用"
+
+#~ msgid "skintype"
+#~ msgstr "皮肤类型"
+
+#~ msgid "Dry"
+#~ msgstr "干性"
+
+#~ msgid "Middle"
+#~ msgstr "中性"
+
+#~ msgid "Oil"
+#~ msgstr "油性"
+
+#~ msgid "Mixed"
+#~ msgstr "混合性"
+
+#~ msgid "Sensitive"
+#~ msgstr "敏感性"
+
+#~ msgid "address"
+#~ msgstr "地址"
+
+#~ msgid "birthday"
+#~ msgstr "生日"
+
+#~ msgid "gender"
+#~ msgstr "性别"
+
+#~ msgid "age"
+#~ msgstr "年龄"
+
+#~ msgid "lastname"
+#~ msgstr "姓"
+
+#~ msgid "firstname"
+#~ msgstr "名"
+
+#~ msgid "Male"
+#~ msgstr "男"
+
+#~ msgid "Female"
+#~ msgstr "女"
+
+#~ msgid "customer_id"
+#~ msgstr "顾客编号"
+
+#~ msgid "comment"
+#~ msgstr "简介"
+
+#~ msgid "already has not this product"
+#~ msgstr "这种产品不存在"
+
+#~ msgid "already has this product"
+#~ msgstr "这种产品已存在"
+
+#~ msgid "manufacture name not null"
+#~ msgstr "生产商名称不能为空"
+
+#~ msgid "total_money"
+#~ msgstr "合计"
+
+#~ msgid "account"
+#~ msgstr "帐号"
+
+#~ msgid "email"
+#~ msgstr "电邮"
+
+#~ msgid "url"
+#~ msgstr "网址"
+
+#~ msgid "money_amount"
+#~ msgstr "金额"
+
+#~ msgid "inout"
+#~ msgstr "收支"
+
+#~ msgid "O"
+#~ msgstr "支出"
+
+#~ msgid "I"
+#~ msgstr "收入"
+
+#~ msgid "tdate"
+#~ msgstr "发生日期"
+
+#~ msgid "desc_money"
+#~ msgstr "说明"
+
+#~ msgid "money_id"
+#~ msgstr "序号"
+
+#~ msgid "date"
+#~ msgstr "日期"
+
+#~ msgid "query"
+#~ msgstr "查询"
+
+#~ msgid "query_month"
+#~ msgstr "查询当月"
+
+#~ msgid "query_all"
+#~ msgstr "查询全部"
+
+#~ msgid "product name"
+#~ msgstr "产品名称"
+
+#~ msgid "sell pice"
+#~ msgstr "销售价"
+
+#~ msgid "customer name"
+#~ msgstr "顾客姓名"
+
+#~ msgid "customer_name"
+#~ msgstr "顾客姓名"
+
+#~ msgid "product_name"
+#~ msgstr "产品名称"
+
+#~ msgid "ALL"
+#~ msgstr "所有"
+
+#~ msgid "uptodate_query"
+#~ msgstr "过期查询"
+
+#~ msgid "sales query"
+#~ msgstr "销售查询"
+
+#~ msgid "cash query"
+#~ msgstr "其他收支查询"
+
+#~ msgid "customer query"
+#~ msgstr "顾客查询"
+
+#~ msgid "product query"
+#~ msgstr "库存查询"

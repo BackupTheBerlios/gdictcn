@@ -1,0 +1,19 @@
+This project illustrates building the simplest GTK application. In order to use
+it copy the entire directory to the new location, say ~/Projects/hello. Then create
+the necessary infrastructure by executing the following:
+
+$ aclocal
+$ autoheader
+$ touch stamp-h
+$ autoconf
+$ automake -a -c
+$ ./configure
+
+Once you have done this check if the program compiles and can be run:
+
+$ make
+$ src/shasha
+
+If it did, you have successfully created a skeleton GTK application. Feel free
+to modify the src directory (and any other, but start with src), by adding new
+functionality to the application.
