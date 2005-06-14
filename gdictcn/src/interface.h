@@ -3,7 +3,7 @@
 typedef struct {
 	GtkWidget * entry;
 	GtkWidget * text;
-	GtkWidget * hbox;	
+	GtkWidget * statusbar;	
 }dict_data;
 GtkWidget* create_window1 (void);
 #endif

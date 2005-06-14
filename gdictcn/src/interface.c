@@ -133,17 +133,9 @@ create_window1 (void)
   gtk_widget_show (statusbar1);
   gtk_box_pack_start (GTK_BOX (vbox1), statusbar1, FALSE, FALSE, 0);
 
-/*
-  pbar = gtk_progress_bar_new();
-  progressdata.pbar=pbar;
-  progressdata.statusbar=statusbar1;
-  gtk_container_add(GTK_CONTAINER(statusbar1),pbar);
-  gtk_widget_show(pbar);
-  progressdata.timer=g_timeout_add(100,progress_timeout,&progressdata);
-*/
-
   dictdata.entry=entry1;
   dictdata.text=text_view;
+  dictdata.statusbar=statusbar1;
 
   g_signal_connect_after ((gpointer) window1, "destroy",
                           G_CALLBACK (gtk_main_quit),

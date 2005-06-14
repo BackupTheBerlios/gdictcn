@@ -105,6 +105,8 @@ find_cb (GtkButton       *button,gpointer user_data)
 	gchar * findstr;
 
 	ddata = (dict_data *)user_data;
+	gtk_statusbar_push(GTK_STATUSBAR(ddata->statusbar),0,"searching dict.cn ...");
+	gdk_window_process_all_updates();
 
 	text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ddata->text));
 	findstr=(gchar *)gtk_entry_get_text(GTK_ENTRY(ddata->entry));	
@@ -112,4 +114,5 @@ find_cb (GtkButton       *button,gpointer user_data)
 	gtk_text_buffer_set_text(text_buffer,result,-1);
 	if(result)
 		free(result);
+	gtk_statusbar_pop(GTK_STATUSBAR(ddata->statusbar),0);
 }

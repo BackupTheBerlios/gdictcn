@@ -12,8 +12,6 @@ getReference (xmlDocPtr doc, xmlNodePtr cur) {
 	while (cur != NULL) {
 	    if ((!xmlStrcmp(cur->name, (const xmlChar *)"def"))) {
 		    def = xmlNodeListGetString(doc,cur->xmlChildrenNode,1);
-		//	printf("def : %s\n",def);
-		    //xmlFree(def);
 			break;
 	    }
 	    cur = cur->next;
@@ -59,21 +57,3 @@ parseDoc(char *docname) {
 
 	return NULL;
 }
-
-/*
-int
-main(int argc, char **argv) {
-
-	char *docname;
-
-	if (argc <= 1) {
-		printf("Usage: %s docname\n", argv[0]);
-		return(0);
-	}
-
-	docname = argv[1];
-	parseDoc (docname);
-	
-	return 0;
-}
-*/
