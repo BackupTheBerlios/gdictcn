@@ -1,0 +1,5 @@
+src/main.c
+src/window.c
+src/callbacks.c
+src/menu.c
+src/font.c
