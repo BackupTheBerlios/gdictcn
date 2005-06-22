@@ -7,6 +7,8 @@
 #  include <config.h>
 #endif
 
+colorbuttons cbs;
+
 static void
 activate_action (GtkAction *action)
 {
@@ -44,7 +46,7 @@ static GtkActionEntry entries[] = {
   { "Color", NULL,          
     "_Color", NULL,
     "Color",              
-    G_CALLBACK (activate_action) },
+    G_CALLBACK (create_color_dialog) },
   { "Terminal", NULL,     
     "_Terminal", NULL,    
     "Terminal",                  
@@ -174,3 +176,75 @@ void terminal_popup_menu(GtkWidget *widget,GdkEventButton * event, gpointer data
 		gtk_get_current_event_time ());
 }
 
+void create_color_dialog(GtkMenuItem     *menuitem, gpointer         user_data)
+{
+	GtkWidget * cw;
+	GtkWidget * top_win;
+	GtkWidget * vbox;
+	GtkWidget * hbox1;
+	GtkWidget * label_fg;
+	GtkWidget * picker_fg;
+	GtkWidget * hbox2;
+	GtkWidget * label_bg;
+	GtkWidget * picker_bg;
+	GtkWidget * button_ok;	
+	GdkColor bg={0,0xffff,0xffff,0xffff};
+	GdkColor fg={0,0x0000,0x0000,0x0000};
+
+	cbs.mw=(MainWin *)user_data;
+	top_win = cbs.mw->window;
+      	cw = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+			     
+      	gtk_window_set_title (GTK_WINDOW (cw), _("select color"));
+	gtk_window_set_resizable(GTK_WINDOW(cw),FALSE);
+	gtk_window_set_transient_for(GTK_WINDOW(cw),GTK_WINDOW(top_win));
+	gtk_window_set_destroy_with_parent(GTK_WINDOW(cw),TRUE);
+      	gtk_container_set_border_width (GTK_CONTAINER (cw), 0);
+
+      	vbox = gtk_vbox_new (FALSE, 5);
+      	gtk_container_set_border_width (GTK_CONTAINER (vbox), 5);
+      	gtk_container_add (GTK_CONTAINER (cw), vbox);
+
+      	hbox1 = gtk_hbox_new (FALSE, 8);
+      	gtk_container_set_border_width (GTK_CONTAINER (hbox1), 8);
+      	gtk_box_pack_start(GTK_BOX(vbox), hbox1,FALSE,FALSE,5);
+      
+      	label_fg = gtk_label_new (_("foreground"));
+  	gtk_widget_set_size_request (label_fg, 120,20);
+      	gtk_box_pack_start(GTK_BOX(hbox1), label_fg,FALSE,FALSE,5);
+
+      	picker_fg = gtk_color_button_new_with_color (&fg);
+      	gtk_color_button_set_use_alpha (GTK_COLOR_BUTTON (picker_fg), TRUE);
+      	gtk_box_pack_start(GTK_BOX(hbox1), picker_fg,FALSE,FALSE,5);
+
+      	hbox2 = gtk_hbox_new (FALSE, 8);
+      	gtk_container_set_border_width (GTK_CONTAINER (hbox2), 8);
+      	gtk_box_pack_start(GTK_BOX(vbox), hbox2,FALSE,FALSE,5);
+      
+      	label_bg = gtk_label_new (_("background"));
+  	gtk_widget_set_size_request (label_bg, 120,20);
+      	gtk_box_pack_start(GTK_BOX(hbox2), label_bg,FALSE,FALSE,5);
+
+      	picker_bg = gtk_color_button_new_with_color (&bg);
+      	gtk_color_button_set_use_alpha (GTK_COLOR_BUTTON (picker_bg), TRUE);
+      	gtk_box_pack_start(GTK_BOX(hbox2), picker_bg,FALSE,FALSE,5);
+
+	button_ok=gtk_button_new_from_stock(GTK_STOCK_OK);
+      	gtk_box_pack_start(GTK_BOX(vbox), button_ok,FALSE,FALSE,5);
+	
+	cbs.fgb=(GtkColorButton *)picker_fg;
+	cbs.bgb=(GtkColorButton *)picker_bg;
+	cbs.color_dialog=cw;
+
+	gtk_widget_show_all(GTK_WIDGET(cw));
+
+	g_signal_connect(G_OBJECT(cw), "delete-event",
+		G_CALLBACK(gtk_widget_destroy), NULL);
+      	g_signal_connect(button_ok, "clicked",
+			G_CALLBACK (change_terminal_color),
+                        &cbs);
+
+      	g_signal_connect_swapped(button_ok, "clicked",
+			G_CALLBACK (gtk_widget_destroy),
+                        cw);
+}
