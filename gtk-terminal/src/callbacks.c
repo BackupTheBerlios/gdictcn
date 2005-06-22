@@ -114,7 +114,7 @@ void cb_change_font (GtkMenuItem     *menuitem, gpointer         user_data)
 	currentname =(gchar *)pango_font_description_to_string(vte_terminal_get_font(VTE_TERMINAL(vt)));
 	fontname =get_font_name_by_selector(mw->window,currentname);
 	if(fontname){
-		vte_terminal_set_font_from_string(VTE_TERMINAL(vt),fontname);
+		vte_terminal_set_font_from_string_full(VTE_TERMINAL(vt),fontname,TRUE);
 		gtk_window_resize(GTK_WINDOW(mw->window),
 				columns * vt->char_width + owidth,
 				rows * vt->char_height + oheight);
@@ -197,15 +197,14 @@ void change_terminal_color(GtkWidget * button,gpointer user_data)
 void char_size_changed(GtkWidget *widget, guint width, guint height, gpointer data)
 {
 	VteTerminal *terminal;
-	GtkWindow *window;
+	GtkWidget* window;
 	GdkGeometry geometry;
 	int xpad, ypad;
 
-	g_return_if_fail(GTK_IS_WINDOW(data));
-	g_return_if_fail(VTE_IS_TERMINAL(widget));
-
-	terminal = VTE_TERMINAL(widget);
-	window = GTK_WINDOW(data);
+	terminal = VTE_TERMINAL(((MainWin *)data)->vte_terminal);
+	window=((MainWin *)data)->window;
+	g_return_if_fail(GTK_IS_WINDOW(window));
+	g_return_if_fail(VTE_IS_TERMINAL(terminal));
 
 	vte_terminal_get_padding(terminal, &xpad, &ypad);
 
@@ -215,17 +214,20 @@ void char_size_changed(GtkWidget *widget, guint width, guint height, gpointer da
 	geometry.base_height = ypad;
 	geometry.min_width = xpad + terminal->char_width * 2;
 	geometry.min_height = ypad + terminal->char_height * 2;
-
-	gtk_window_set_geometry_hints(window, widget, &geometry,
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), window, &geometry,
 				      GDK_HINT_RESIZE_INC |
 				      GDK_HINT_BASE_SIZE |
 				      GDK_HINT_MIN_SIZE);
+
 }
 
 void status_line_changed(GtkWidget *widget, gpointer data)
 {
+	VteTerminal *terminal;
+
+	terminal = VTE_TERMINAL(((MainWin *)data)->vte_terminal);
 	g_print("Status = `%s'.\n",
-		vte_terminal_get_status_line(VTE_TERMINAL(widget)));
+		vte_terminal_get_status_line(terminal));
 }
 
  
@@ -235,6 +237,8 @@ int button_pressed(GtkWidget *widget, GdkEventButton *event, gpointer data)
 	char *match;
 	int tag;
 	gint xpad, ypad;
+
+	terminal = VTE_TERMINAL(((MainWin *)data)->vte_terminal);
 	switch (event->button) {
 	case 3:
 		terminal = VTE_TERMINAL(widget);
@@ -264,9 +268,12 @@ int button_pressed(GtkWidget *widget, GdkEventButton *event, gpointer data)
  
 void iconify_window(GtkWidget *widget, gpointer data)
 {
-	if (GTK_IS_WIDGET(data)) {
-		if ((GTK_WIDGET(data))->window) {
-			gdk_window_iconify((GTK_WIDGET(data))->window);
+	GtkWidget* window;
+
+	window=((MainWin *)data)->window;
+	if (GTK_IS_WIDGET(window)) {
+		if ((GTK_WIDGET(window))->window) {
+			gdk_window_iconify((GTK_WIDGET(window))->window);
 		}
 	}
 }
@@ -274,58 +281,76 @@ void iconify_window(GtkWidget *widget, gpointer data)
  
 void deiconify_window(GtkWidget *widget, gpointer data)
 {
-	if (GTK_IS_WIDGET(data)) {
-		if ((GTK_WIDGET(data))->window) {
-			gdk_window_deiconify((GTK_WIDGET(data))->window);
+	GtkWidget* window;
+
+	window=((MainWin *)data)->window;
+	if (GTK_IS_WIDGET(window)) {
+		if ((GTK_WIDGET(window))->window) {
+			gdk_window_deiconify((GTK_WIDGET(window))->window);
 		}
 	}
 }
 
 void raise_window(GtkWidget *widget, gpointer data)
 {
-	if (GTK_IS_WIDGET(data)) {
-		if ((GTK_WIDGET(data))->window) {
-			gdk_window_raise((GTK_WIDGET(data))->window);
+	GtkWidget* window;
+
+	window=((MainWin *)data)->window;
+	if (GTK_IS_WIDGET(window)) {
+		if ((GTK_WIDGET(window))->window) {
+			gdk_window_raise((GTK_WIDGET(window))->window);
 		}
 	}
 }
 
 void lower_window(GtkWidget *widget, gpointer data)
 {
-	if (GTK_IS_WIDGET(data)) {
-		if ((GTK_WIDGET(data))->window) {
-			gdk_window_lower((GTK_WIDGET(data))->window);
+	GtkWidget* window;
+
+	window=((MainWin *)data)->window;
+	if (GTK_IS_WIDGET(window)) {
+		if ((GTK_WIDGET(window))->window) {
+			gdk_window_lower((GTK_WIDGET(window))->window);
 		}
 	}
 }
 
 void maximize_window(GtkWidget *widget, gpointer data)
 {
-	if (GTK_IS_WIDGET(data)) {
-		if ((GTK_WIDGET(data))->window) {
-			gdk_window_maximize((GTK_WIDGET(data))->window);
+	GtkWidget* window;
+
+	window=((MainWin *)data)->window;
+	if (GTK_IS_WIDGET(window)) {
+		if ((GTK_WIDGET(window))->window) {
+			gdk_window_maximize((GTK_WIDGET(window))->window);
 		}
 	}
 }
 
 void restore_window(GtkWidget *widget, gpointer data)
 {
-	if (GTK_IS_WIDGET(data)) {
-		if ((GTK_WIDGET(data))->window) {
-			gdk_window_unmaximize((GTK_WIDGET(data))->window);
+	GtkWidget* window;
+
+	window=((MainWin *)data)->window;
+	if (GTK_IS_WIDGET(window)) {
+		if ((GTK_WIDGET(window))->window) {
+			gdk_window_unmaximize((GTK_WIDGET(window))->window);
 		}
 	}
 }
 
 void refresh_window(GtkWidget *widget, gpointer data)
 {
+	GtkWidget* window;
 	GdkRectangle rect;
-	if (GTK_IS_WIDGET(data)) {
-		if ((GTK_WIDGET(data))->window) {
+
+	window=((MainWin *)data)->window;
+	if (GTK_IS_WIDGET(window)) {
+		if ((GTK_WIDGET(window))->window) {
 			rect.x = rect.y = 0;
-			rect.width = (GTK_WIDGET(data))->allocation.width;
-			rect.height = (GTK_WIDGET(data))->allocation.height;
-			gdk_window_invalidate_rect((GTK_WIDGET(data))->window,
+			rect.width = window->allocation.width;
+			rect.height = window->allocation.height;
+			gdk_window_invalidate_rect((GTK_WIDGET(window))->window,
 						   &rect, TRUE);
 		}
 	}
@@ -333,26 +358,32 @@ void refresh_window(GtkWidget *widget, gpointer data)
 
 void resize_window(GtkWidget *widget, guint width, guint height, gpointer data)
 {
+	GtkWidget* window;
 	VteTerminal *terminal;
 	gint owidth, oheight, xpad, ypad;
-	if ((GTK_IS_WINDOW(data)) && (width >= 2) && (height >= 2)) {
-		terminal = VTE_TERMINAL(widget);
-		gtk_window_get_size(GTK_WINDOW(data), &owidth, &oheight);
+
+	window=((MainWin *)data)->window;
+	terminal = VTE_TERMINAL(((MainWin *)data)->vte_terminal);
+	if ((GTK_IS_WINDOW(window)) && (width >= 2) && (height >= 2)) {
+		gtk_window_get_size(GTK_WINDOW(window), &owidth, &oheight);
 		owidth -= terminal->char_width * terminal->column_count;
 		oheight -= terminal->char_height * terminal->row_count;
-		vte_terminal_get_padding(VTE_TERMINAL(widget), &xpad, &ypad);
+		vte_terminal_get_padding(VTE_TERMINAL(terminal), &xpad, &ypad);
 		owidth -= xpad;
 		oheight -= ypad;
-		gtk_window_resize(GTK_WINDOW(data),
+		gtk_window_resize(GTK_WINDOW(window),
 				  width + owidth, height + oheight);
 	}
 }
 
 void move_window(GtkWidget *widget, guint x, guint y, gpointer data)
 {
-	if (GTK_IS_WIDGET(data)) {
-		if ((GTK_WIDGET(data))->window) {
-			gdk_window_move((GTK_WIDGET(data))->window, x, y);
+	GtkWidget* window;
+
+	window=((MainWin *)data)->window;
+	if (GTK_IS_WIDGET(window)) {
+		if ((GTK_WIDGET(window))->window) {
+			gdk_window_move((GTK_WIDGET(window))->window, x, y);
 		}
 	}
 }
@@ -360,15 +391,17 @@ void move_window(GtkWidget *widget, guint x, guint y, gpointer data)
 void adjust_font_size(GtkWidget *widget, gpointer data, gint howmuch)
 {
 	VteTerminal *terminal;
+	GtkWidget* window;
 	PangoFontDescription *desired;
 	gint newsize;
 	gint columns, rows, owidth, oheight;
 
-	terminal = VTE_TERMINAL(widget);
+	window=((MainWin *)data)->window;
+	terminal = VTE_TERMINAL(((MainWin *)data)->vte_terminal);
 	columns = terminal->column_count;
 	rows = terminal->row_count;
 
-	gtk_window_get_size(GTK_WINDOW(data), &owidth, &oheight);
+	gtk_window_get_size(GTK_WINDOW(window), &owidth, &oheight);
 	owidth -= terminal->char_width * terminal->column_count;
 	oheight -= terminal->char_height * terminal->row_count;
 
@@ -379,7 +412,7 @@ void adjust_font_size(GtkWidget *widget, gpointer data, gint howmuch)
 					CLAMP(newsize, 4, 144) * PANGO_SCALE);
 
 	vte_terminal_set_font(terminal, desired);
-	gtk_window_resize(GTK_WINDOW(data),
+	gtk_window_resize(GTK_WINDOW(window),
 			  columns * terminal->char_width + owidth,
 			  rows * terminal->char_height + oheight);
 
@@ -394,19 +427,4 @@ void increase_font_size(GtkWidget *widget, gpointer data)
 void decrease_font_size(GtkWidget *widget, gpointer data)
 {
 	adjust_font_size(widget, data, -1);
-}
-
-gboolean read_and_feed(GIOChannel *source, GIOCondition condition, gpointer data)
-{
-	char buf[2048];
-	gsize size;
-	GIOStatus status;
-	g_return_val_if_fail(VTE_IS_TERMINAL(data), FALSE);
-	status = g_io_channel_read_chars(source, buf, sizeof(buf),
-					 &size, NULL);
-	if ((status == G_IO_STATUS_NORMAL) && (size > 0)) {
-		vte_terminal_feed(VTE_TERMINAL(data), buf, size);
-		return TRUE;
-	}
-	return FALSE;
 }

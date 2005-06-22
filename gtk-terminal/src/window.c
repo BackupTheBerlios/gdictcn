@@ -14,23 +14,21 @@ MainWin *create_main_window(void)
 {
 	GtkWidget *window;
 	GtkWidget *vbox;
-	GtkWidget *hbox;
-	GtkWidget *scrollbar;
  	GtkWidget *menubar;
       	GtkUIManager *ui;
  	GtkWidget *vt;
- 	GdkPixbuf *icon;
+ 	//GdkPixbuf *icon;
 	gchar * fontstr;
+	MainWin *mw = &mainwin; 
 	GdkColor bg={0,0xffff,0xffff,0xffff};
 	GdkColor fg={0,0x0000,0x0000,0x0000};
 	GdkColor tint={0,0x0000,0x0000,0x0000};
 	GdkColor highlight={0,0xc000,0xc000,0xc000};
-	GdkColor cursor={0,0xffff,0x8000,0x8000};
+	//GdkColor cursor={0,0xffff,0x8000,0x8000};
 	
 	cf.fontname="Monospace";
-	cf.fontsize="16";
+	cf.fontsize="14";
 	fontstr=g_strjoin(" ",cf.fontname,cf.fontsize,NULL);
-	MainWin *mw = &mainwin; 
 	
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("gtk-terminal"));
@@ -45,8 +43,6 @@ MainWin *create_main_window(void)
 		G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 */
 	
-	//gtk_container_set_resize_mode(GTK_CONTAINER(window),
-	//			      GTK_RESIZE_IMMEDIATE);
 	vbox = gtk_vbox_new(FALSE, 5);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 	
@@ -56,17 +52,19 @@ MainWin *create_main_window(void)
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, FALSE, 0);
 	
 	
-	hbox = gtk_hbox_new(0, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	vt = vte_terminal_new();
 	gtk_widget_set_double_buffered(vt, TRUE);
-	//char_size_changed(vt, 0, 0, window);
-	g_signal_connect(G_OBJECT(vt), "char-size-changed",
-				 G_CALLBACK(char_size_changed), window);
-	vte_terminal_set_font_from_string_full(VTE_TERMINAL(vt),fontstr,FALSE);
+	mw->menubar = menubar;
+	mw->vte_terminal = vt;
+	mw->cf = &cf;
+
+	vte_terminal_set_font_from_string_full(VTE_TERMINAL(vt),fontstr,TRUE);
 	cf.defcharset=(gchar *)vte_terminal_get_encoding(VTE_TERMINAL(vt));
 	g_free(fontstr);
 
+	char_size_changed(vt, 0, 0, mw);
+	g_signal_connect(G_OBJECT(vt), "char-size-changed",
+				 G_CALLBACK(char_size_changed), mw);
 	vte_terminal_set_audible_bell(VTE_TERMINAL(vt), TRUE);
 	vte_terminal_set_visible_bell(VTE_TERMINAL(vt), FALSE);
 	vte_terminal_set_cursor_blinks(VTE_TERMINAL(vt), FALSE);
@@ -80,45 +78,37 @@ MainWin *create_main_window(void)
 	vte_terminal_set_colors(VTE_TERMINAL(vt), &fg, &bg, NULL, 0);
 	vte_terminal_set_color_highlight(VTE_TERMINAL(vt),&highlight);
 						 
-	vte_terminal_set_color_cursor(VTE_TERMINAL(vt), &cursor);
-	//vte_terminal_set_emulation(VTE_TERMINAL(vt), terminal);
+	//vte_terminal_set_color_cursor(VTE_TERMINAL(vt), &cursor);
+	//vte_terminal_set_emulation(VTE_TERMINAL(vt), "linux");
 
 	vte_terminal_fork_command(VTE_TERMINAL(vt),
 					  "bash", NULL, NULL,
 					  "~",
 					  TRUE, TRUE, TRUE);
-	gtk_box_pack_start(GTK_BOX(hbox), vt, FALSE, FALSE, 0);
-
-	scrollbar = gtk_vscrollbar_new((VTE_TERMINAL(vt))->adjustment);
-	gtk_box_pack_start(GTK_BOX(hbox), scrollbar, FALSE, FALSE, 0);
-
-	mw->menubar = menubar;
-	mw->vte_terminal = vt;
-	mw->cf = &cf;
+	gtk_box_pack_start(GTK_BOX(vbox), vt, TRUE, TRUE, 0);
 
 	g_signal_connect(G_OBJECT(vt), "iconify-window",
-			 G_CALLBACK(iconify_window), window);
+			 G_CALLBACK(iconify_window), mw);
 	g_signal_connect(G_OBJECT(vt), "deiconify-window",
-			 G_CALLBACK(deiconify_window), window);
+			 G_CALLBACK(deiconify_window),mw);
 	g_signal_connect(G_OBJECT(vt), "raise-window",
-			 G_CALLBACK(raise_window), window);
+			 G_CALLBACK(raise_window), mw);
 	g_signal_connect(G_OBJECT(vt), "lower-window",
-			 G_CALLBACK(lower_window), window);
+			 G_CALLBACK(lower_window), mw);
 	g_signal_connect(G_OBJECT(vt), "maximize-window",
-			 G_CALLBACK(maximize_window), window);
+			 G_CALLBACK(maximize_window), mw);
 	g_signal_connect(G_OBJECT(vt), "restore-window",
-			 G_CALLBACK(restore_window), window);
+			 G_CALLBACK(restore_window), mw);
 	g_signal_connect(G_OBJECT(vt), "move-window",
-			 G_CALLBACK(move_window), window);
+			 G_CALLBACK(move_window), mw);
 	g_signal_connect(G_OBJECT(vt), "refresh-window",
-			 G_CALLBACK(refresh_window), window);
+			 G_CALLBACK(refresh_window), mw);
 	g_signal_connect(G_OBJECT(vt), "resize-window",
-			 G_CALLBACK(resize_window), window);
-
+			 G_CALLBACK(resize_window), mw);
 	g_signal_connect(G_OBJECT(vt), "increase-font-size",
-			 G_CALLBACK(increase_font_size), window);
+			 G_CALLBACK(increase_font_size), mw);
 	g_signal_connect(G_OBJECT(vt), "decrease-font-size",
-			 G_CALLBACK(decrease_font_size), window);
+			 G_CALLBACK(decrease_font_size), mw);
 
   	g_signal_connect_after((gpointer) window, "destroy",
                           G_CALLBACK (destroy_and_quit_exited),
