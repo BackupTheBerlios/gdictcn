@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-06-22 17:41+0800\n"
+"POT-Creation-Date: 2005-06-23 13:46+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,18 +16,76 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/window.c:34
+#: src/window.c:33 src/callbacks.c:87
 msgid "gtk-terminal"
 msgstr ""
 
-#: src/menu.c:198
+#: src/menu.c:20
+msgid "_File"
+msgstr ""
+
+#. name, stock id, label
+#: src/menu.c:21
+msgid "_Edit"
+msgstr ""
+
+#: src/menu.c:22
+msgid "_Preferences"
+msgstr ""
+
+#: src/menu.c:23
+msgid "_Bookmarks"
+msgstr ""
+
+#: src/menu.c:24
+msgid "_Help"
+msgstr ""
+
+#. name, stock id
+#: src/menu.c:26
+msgid "_Quit"
+msgstr ""
+
+#: src/menu.c:36
+msgid "_Copy"
+msgstr ""
+
+#: src/menu.c:40
+msgid "_Paste"
+msgstr ""
+
+#: src/menu.c:44
+msgid "_Font"
+msgstr ""
+
+#: src/menu.c:48
+msgid "_Color"
+msgstr ""
+
+#: src/menu.c:52
+msgid "_Terminal"
+msgstr ""
+
+#: src/menu.c:55
+msgid "_Charset"
+msgstr ""
+
+#: src/menu.c:57
+msgid "_Default"
+msgstr ""
+
+#: src/menu.c:69
+msgid "_About"
+msgstr ""
+
+#: src/menu.c:204
 msgid "select color"
 msgstr ""
 
-#: src/menu.c:212
+#: src/menu.c:218
 msgid "foreground"
 msgstr ""
 
-#: src/menu.c:224
+#: src/menu.c:230
 msgid "background"
 msgstr ""

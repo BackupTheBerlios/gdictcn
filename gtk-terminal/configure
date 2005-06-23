@@ -5090,8 +5090,23 @@ cat >>confdefs.h <<_ACEOF
 #define GETTEXT_PACKAGE "${GETTEXT_PACKAGE}"
 _ACEOF
 
+glib_save_prefix="$prefix"
+glib_save_exec_prefix="$exec_prefix"
+test "x$prefix" = xNONE && prefix=$ac_default_prefix
+test "x$exec_prefix" = xNONE && exec_prefix=$prefix
+if test "x$CATOBJEXT" = "x.mo" ; then
+  localedir=`eval echo "${libdir}/locale"`
+else
+  localedir=`eval echo "${datadir}/locale"`
+fi
+prefix="$glib_save_prefix"
+exec_prefix="$glib_save_exec_prefix"
 
-ALL_LINGUAS="zh_CN"
+cat >>confdefs.h <<_ACEOF
+#define LOCALEDIR "$localedir"
+_ACEOF
+
+
 
                                         ac_config_files="$ac_config_files Makefile src/Makefile pixmaps/Makefile po/Makefile.in"
 cat >confcache <<\_ACEOF

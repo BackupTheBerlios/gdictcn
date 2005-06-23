@@ -10,6 +10,8 @@ typedef struct{
 	GtkWidget * color_dialog;
 	GtkColorButton *fgb;
 	GtkColorButton *bgb;
+	GdkColor bg_color;
+	GdkColor fg_color;
 }colorbuttons;
 GtkUIManager *create_ui_manager(MainWin *mw);
 void terminal_popup_menu(GtkWidget *widget,GdkEventButton * event, gpointer data);

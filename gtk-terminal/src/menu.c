@@ -1,74 +1,76 @@
+#ifdef HAVE_CONFIG_H
+  	include <config.h>
+#endif
+
+#include <string.h>
 #include <gtk/gtk.h>
 #include "menu.h"
 #include "i18n.h"
 #include "callbacks.h"
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
 
 colorbuttons cbs;
 
-static void
-activate_action (GtkAction *action)
+static void activate_action (GtkAction *action)
 {
-  g_message ("Action \"%s\" activated", gtk_action_get_name (action));
+  	g_message ("Action \"%s\" activated", gtk_action_get_name (action));
 }
 
 static GtkActionEntry entries[] = {
-  { "FileMenu", NULL, "File"},               /* name, stock id, label */
-  { "EditMenu", NULL, "Edit"  }, 
-  { "PreferencesMenu", NULL, "Preferences" },
-  { "BookMarksMenu", NULL, "Bookmarks" }, 
-  { "HelpMenu", NULL, "Help" },
-  { "Quit", GTK_STOCK_QUIT,         /* name, stock id */
-    "_Quit", "<control>Q",                     /* label, accelerator */     
-    "Quit",                                    /* tooltip */
-    G_CALLBACK (destroy_and_quit) },
+  	{ "FileMenu", NULL, N_("_File")},               /* name, stock id, label */
+  	{ "EditMenu", NULL, N_("_Edit")  }, 
+  	{ "PreferencesMenu", NULL, N_("_Preferences") },
+  	{ "BookMarksMenu", NULL, N_("_Bookmarks") }, 
+  	{ "HelpMenu", NULL, N_("_Help") },
+  	{ "Quit", GTK_STOCK_QUIT,         /* name, stock id */
+    	N_("_Quit"), "<control>Q",                     /* label, accelerator */     
+    	"Quit",                                    /* tooltip */
+    	G_CALLBACK (destroy_and_quit) },
 /*
   { "Cut", NULL,                   
     "_Cut", "<control>X",         
     "Cut",                       
     G_CALLBACK (cb_cut) },
 */
-  { "Copy", NULL,               
-    "_Copy", "<control>C",     
-    "Copy",                   
-    G_CALLBACK (cb_copy) },
-  { "Paste", NULL,                
-    "_Paste", "<control>V",      
-    "Paste",                    
-    G_CALLBACK (cb_paste) },
-  { "Font", NULL,              
-    "_Font", NULL,    
-    "Font",                  
-    G_CALLBACK (cb_change_font) },
-  { "Color", NULL,          
-    "_Color", NULL,
-    "Color",              
-    G_CALLBACK (create_color_dialog) },
-  { "Terminal", NULL,     
-    "_Terminal", NULL,    
-    "Terminal",                  
-    G_CALLBACK (activate_action) },
-  { "Submenu", NULL, "_Charset" },   
-  { "Default", NULL,              
-    "_Default", NULL,    
-    "Default",                  
-    G_CALLBACK (cb_defcharset) },
-  { "GB2312", NULL,              
-    "_GB2312", NULL,    
-    "GB2312",                  
-    G_CALLBACK (cb_gb2312) },
-  { "utf-8", NULL,            
-    "_utf-8", NULL,  
-    "utf-8",                
-    G_CALLBACK (cb_utf8) },
-  { "About", NULL,         
-    "_About", "<control>A",
-    "About",              
-    G_CALLBACK (cb_about) },
+  	{ "Copy", GTK_STOCK_COPY,               
+    	N_("_Copy"), "<control>C",     
+    	"Copy",                   
+    	G_CALLBACK (cb_copy) },
+  	{ "Paste", GTK_STOCK_PASTE,                
+    	N_("_Paste"), "<control>V",      
+    	"Paste",                    
+    	G_CALLBACK (cb_paste) },
+  	{ "Font", GTK_STOCK_SELECT_FONT,              
+    	N_("_Font"), NULL,    
+    	"Font",                  
+    	G_CALLBACK (cb_change_font) },
+  	{ "Color", GTK_STOCK_SELECT_COLOR,          
+    	N_("_Color"), NULL,
+    	"Color",              
+    	G_CALLBACK (create_color_dialog) },
+  	{ "Terminal", GTK_STOCK_PROPERTIES,     
+    	N_("_Terminal"), NULL,    
+    	"Terminal",                  
+    	G_CALLBACK (activate_action) },
+  	{ "Submenu", NULL, N_("_Charset") },   
+  	{ "Default", NULL,              
+    	N_("_Default"), NULL,    
+    	"Default",                  
+    	G_CALLBACK (cb_defcharset) },
+  	{ "GB2312", NULL,              
+    	"_GB2312", NULL,    
+    	"GB2312",                  
+    	G_CALLBACK (cb_gb2312) },
+  	{ "utf-8", NULL,            
+    	"_utf-8", NULL,  
+    	"utf-8",                
+    	G_CALLBACK (cb_utf8) },
+  	{ "About", GTK_STOCK_ABOUT,         
+   	N_("_About"), "<control>A",
+    	"About",              
+    	G_CALLBACK (cb_about) },
 };
+
 static guint n_entries = G_N_ELEMENTS (entries);
 
 static const gchar *ui_info = 
@@ -99,15 +101,15 @@ static const gchar *ui_info =
 "</ui>";
 
 static GtkActionEntry popentries[] = {
-  { "PopupMenu", NULL, "_File" },               /* name, stock id, label */
-  { "Pop_copy", NULL,               
-    "_Copy", "<control>C",     
-    "Copy",                   
-    G_CALLBACK (cb_copy) },
-  { "Pop_paste", NULL,                
-    "_Paste", "<control>V",      
-    "Paste",                    
-    G_CALLBACK (cb_paste) },
+  	{ "PopupMenu", NULL, "_File" },               /* name, stock id, label */
+  	{ "Pop_copy", NULL,               
+    	"_Copy", "<control>C",     
+    	"Copy",                   
+    	G_CALLBACK (cb_copy) },
+  	{ "Pop_paste", NULL,                
+    	"_Paste", "<control>V",      
+    	"Paste",                    
+    	G_CALLBACK (cb_paste) },
 };
 static guint n_popentries = G_N_ELEMENTS (popentries);
 static const gchar *popui = 
@@ -120,23 +122,23 @@ static const gchar *popui =
 
 GtkUIManager * create_ui_manager(MainWin * mw)
 {
-      GtkUIManager *ui;
-      GtkActionGroup *actions;
-      GError *error = NULL;
+      	GtkUIManager *ui;
+      	GtkActionGroup *actions;
+      	GError *error = NULL;
 
      
-      actions = gtk_action_group_new ("Actions");
-      gtk_action_group_add_actions (actions, entries, n_entries, mw);
-
-      ui = gtk_ui_manager_new ();
-      gtk_ui_manager_insert_action_group (ui, actions, 0);
-      gtk_window_add_accel_group (GTK_WINDOW (mw->window), 
+      	actions = gtk_action_group_new ("Actions");
+	gtk_action_group_set_translation_domain (actions, GETTEXT_PACKAGE);
+      	gtk_action_group_add_actions (actions, entries, n_entries, mw);
+      	ui = gtk_ui_manager_new ();
+      	gtk_ui_manager_insert_action_group (ui, actions, 0);
+      	gtk_window_add_accel_group (GTK_WINDOW (mw->window), 
 				  gtk_ui_manager_get_accel_group (ui));
       
-      if (!gtk_ui_manager_add_ui_from_string (ui, ui_info, -1, &error))
+      	if (!gtk_ui_manager_add_ui_from_string (ui, ui_info, -1, &error))
 	{
-	  g_message ("building menus failed: %s", error->message);
-	  g_error_free (error);
+	  	g_message ("building menus failed: %s", error->message);
+	  	g_error_free (error);
 	}
 
   	return ui; 
@@ -145,9 +147,9 @@ GtkUIManager * create_ui_manager(MainWin * mw)
 void terminal_popup_menu(GtkWidget *widget,GdkEventButton * event, gpointer data)
 {
 	MainWin * mw;
-      GtkUIManager *ui;
-      GtkActionGroup *actions;
-      GError *error = NULL;
+      	GtkUIManager *ui;
+      	GtkActionGroup *actions;
+      	GError *error = NULL;
 	GtkWidget * menu;
 
 	mw=(MainWin *)data;     
@@ -155,18 +157,18 @@ void terminal_popup_menu(GtkWidget *widget,GdkEventButton * event, gpointer data
 		g_print("left button\n");
 		return;	
 	}
-      actions = gtk_action_group_new ("PopActions");
-      gtk_action_group_add_actions (actions, popentries, n_popentries, mw);
+      	actions = gtk_action_group_new ("PopActions");
+      	gtk_action_group_add_actions (actions, popentries, n_popentries, mw);
 
-      ui = gtk_ui_manager_new ();
-      gtk_ui_manager_insert_action_group (ui, actions, 0);
-      gtk_window_add_accel_group (GTK_WINDOW (mw->window), 
+      	ui = gtk_ui_manager_new ();
+      	gtk_ui_manager_insert_action_group (ui, actions, 0);
+      	gtk_window_add_accel_group (GTK_WINDOW (mw->window), 
 				  gtk_ui_manager_get_accel_group (ui));
       
-      if (!gtk_ui_manager_add_ui_from_string (ui, popui, -1, &error))
+      	if (!gtk_ui_manager_add_ui_from_string (ui, popui, -1, &error))
 	{
-	  g_message ("building menus failed: %s", error->message);
-	  g_error_free (error);
+	  	g_message ("building menus failed: %s", error->message);
+	  	g_error_free (error);
 	}
 
 
@@ -188,10 +190,14 @@ void create_color_dialog(GtkMenuItem     *menuitem, gpointer         user_data)
 	GtkWidget * label_bg;
 	GtkWidget * picker_bg;
 	GtkWidget * button_ok;	
-	GdkColor bg={0,0xffff,0xffff,0xffff};
 	GdkColor fg={0,0x0000,0x0000,0x0000};
+	GdkColor bg={0,0xffff,0xffff,0xffff};
 
-	cbs.mw=(MainWin *)user_data;
+	if(!cbs.mw){
+		cbs.mw=(MainWin *)user_data;
+		memcpy(&cbs.fg_color,&fg,sizeof(fg));
+		memcpy(&cbs.bg_color,&bg,sizeof(bg));
+	}
 	top_win = cbs.mw->window;
       	cw = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 			     
@@ -213,7 +219,7 @@ void create_color_dialog(GtkMenuItem     *menuitem, gpointer         user_data)
   	gtk_widget_set_size_request (label_fg, 120,20);
       	gtk_box_pack_start(GTK_BOX(hbox1), label_fg,FALSE,FALSE,5);
 
-      	picker_fg = gtk_color_button_new_with_color (&fg);
+      	picker_fg = gtk_color_button_new_with_color (&cbs.fg_color);
       	gtk_color_button_set_use_alpha (GTK_COLOR_BUTTON (picker_fg), TRUE);
       	gtk_box_pack_start(GTK_BOX(hbox1), picker_fg,FALSE,FALSE,5);
 
@@ -225,7 +231,7 @@ void create_color_dialog(GtkMenuItem     *menuitem, gpointer         user_data)
   	gtk_widget_set_size_request (label_bg, 120,20);
       	gtk_box_pack_start(GTK_BOX(hbox2), label_bg,FALSE,FALSE,5);
 
-      	picker_bg = gtk_color_button_new_with_color (&bg);
+      	picker_bg = gtk_color_button_new_with_color (&cbs.bg_color);
       	gtk_color_button_set_use_alpha (GTK_COLOR_BUTTON (picker_bg), TRUE);
       	gtk_box_pack_start(GTK_BOX(hbox2), picker_bg,FALSE,FALSE,5);
 

@@ -1,8 +1,10 @@
+#ifdef HAVE_CONFIG_H
+  	include <config.h>
+#endif
+
 #include <gtk/gtk.h>
 #include <vte/vte.h>
-#include "window.h"
-#include "font.h"
-#include "menu.h"
+#include "gtk-terminal.h"
 
 void destroy_and_quit(GtkWidget *widget, gpointer data)
 {
@@ -40,12 +42,12 @@ void cb_about (GtkMenuItem     *menuitem,
   	gchar *filename;
 
   	const gchar *authors[] = {
-    		"Dave Young",
+    		"Dave Young <hidave@mail.berlios.de>",
     		NULL
   	};
 
   	const gchar *documentors[] = {
-    		"Dave Young",
+    		"Dave Young <hidave@mail.berlios.de>",
     		NULL
   	};
 
@@ -82,7 +84,7 @@ void cb_about (GtkMenuItem     *menuitem,
   	gtk_about_dialog_set_email_hook (activate_email, NULL, NULL);
   	gtk_about_dialog_set_url_hook (activate_url, NULL, NULL);
   	gtk_show_about_dialog (GTK_WINDOW(mw->window),
-			 "name", "gtk-terminal",
+			 "name", _("gtk-terminal"),
 			 "version", "0.1",
 			 "copyright", "2005-2006 Dave Young",
 			 "license", license,
@@ -183,14 +185,13 @@ void change_terminal_color(GtkWidget * button,gpointer user_data)
 {
 	colorbuttons * colorbs;
 	VteTerminal * vt;
-	GdkColor fg,bg;
 	
 	colorbs=(colorbuttons *)user_data;
 	vt=(VteTerminal *)(colorbs->mw->vte_terminal);
-	gtk_color_button_get_color(colorbs->fgb,&fg);
-	gtk_color_button_get_color(colorbs->bgb,&bg);
-	vte_terminal_set_color_foreground(vt,&fg);
-	vte_terminal_set_color_background(vt,&bg);
+	gtk_color_button_get_color(colorbs->fgb,&colorbs->fg_color);
+	gtk_color_button_get_color(colorbs->bgb,&colorbs->bg_color);
+	vte_terminal_set_color_foreground(vt,&colorbs->fg_color);
+	vte_terminal_set_color_background(vt,&colorbs->bg_color);
 }
 
  

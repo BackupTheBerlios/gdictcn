@@ -1,8 +1,7 @@
-#include "gtk-terminal.h"
-
 #ifdef HAVE_CONFIG_H
-#  	include <config.h>
+  	include <config.h>
 #endif
+#include "gtk-terminal.h"
 
 int main (int argc, char *argv[])
 {
@@ -11,7 +10,7 @@ int main (int argc, char *argv[])
 
 #ifdef ENABLE_NLS
   	bindtextdomain (GETTEXT_PACKAGE, LOCALE_DIR);
-  	bind_textdomain_codeset (GETTEXT_PACKAGE, NULL);
+  	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   	textdomain (GETTEXT_PACKAGE);
 #endif
   	gtk_set_locale ();

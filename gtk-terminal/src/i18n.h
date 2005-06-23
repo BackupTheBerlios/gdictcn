@@ -3,4 +3,5 @@
 #include <libintl.h>
 #include <locale.h>
 #define _(text) gettext(text)
+#define N_(text) (text)
 #endif
