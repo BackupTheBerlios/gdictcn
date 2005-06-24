@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-06-23 13:46+0800\n"
+"POT-Creation-Date: 2005-06-24 14:28+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,10 +30,10 @@ msgid "_Edit"
 msgstr ""
 
 #: src/menu.c:22
-msgid "_Preferences"
+msgid "_Setting"
 msgstr ""
 
-#: src/menu.c:23
+#: src/menu.c:23 src/menu.c:57
 msgid "_Bookmarks"
 msgstr ""
 
@@ -70,22 +70,22 @@ msgstr ""
 msgid "_Charset"
 msgstr ""
 
-#: src/menu.c:57
+#: src/menu.c:61
 msgid "_Default"
 msgstr ""
 
-#: src/menu.c:69
+#: src/menu.c:73
 msgid "_About"
 msgstr ""
 
-#: src/menu.c:204
+#: src/menu.c:211
 msgid "select color"
 msgstr ""
 
-#: src/menu.c:218
+#: src/menu.c:225
 msgid "foreground"
 msgstr ""
 
-#: src/menu.c:230
+#: src/menu.c:237
 msgid "background"
 msgstr ""

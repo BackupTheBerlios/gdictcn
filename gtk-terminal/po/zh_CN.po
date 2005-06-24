@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-06-23 13:46+0800\n"
+"POT-Creation-Date: 2005-06-24 14:28+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,10 +30,10 @@ msgid "_Edit"
 msgstr "编辑"
 
 #: src/menu.c:22
-msgid "_Preferences"
+msgid "_Setting"
 msgstr "设置"
 
-#: src/menu.c:23
+#: src/menu.c:23 src/menu.c:57
 msgid "_Bookmarks"
 msgstr "书签"
 
@@ -70,22 +70,25 @@ msgstr "终端"
 msgid "_Charset"
 msgstr "编码"
 
-#: src/menu.c:57
+#: src/menu.c:61
 msgid "_Default"
 msgstr "默认"
 
-#: src/menu.c:69
+#: src/menu.c:73
 msgid "_About"
 msgstr "关于"
 
-#: src/menu.c:204
+#: src/menu.c:211
 msgid "select color"
 msgstr "选择颜色"
 
-#: src/menu.c:218
+#: src/menu.c:225
 msgid "foreground"
 msgstr "前景"
 
-#: src/menu.c:230
+#: src/menu.c:237
 msgid "background"
 msgstr "背景"
+
+#~ msgid "_Preferences"
+#~ msgstr "设置"

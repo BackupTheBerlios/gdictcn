@@ -1,5 +1,5 @@
 #ifdef HAVE_CONFIG_H
-  	include <config.h>
+#  	include <config.h>
 #endif
 
 #include <string.h>
@@ -19,7 +19,7 @@ static void activate_action (GtkAction *action)
 static GtkActionEntry entries[] = {
   	{ "FileMenu", NULL, N_("_File")},               /* name, stock id, label */
   	{ "EditMenu", NULL, N_("_Edit")  }, 
-  	{ "PreferencesMenu", NULL, N_("_Preferences") },
+  	{ "SettingMenu", NULL, N_("_Setting") },
   	{ "BookMarksMenu", NULL, N_("_Bookmarks") }, 
   	{ "HelpMenu", NULL, N_("_Help") },
   	{ "Quit", GTK_STOCK_QUIT,         /* name, stock id */
@@ -53,6 +53,10 @@ static GtkActionEntry entries[] = {
     	"Terminal",                  
     	G_CALLBACK (activate_action) },
   	{ "Submenu", NULL, N_("_Charset") },   
+  	{ "bookmark", NULL,              
+    	N_("_Bookmarks"), NULL,    
+    	"bookmark",                  
+    	G_CALLBACK (activate_action) },
   	{ "Default", NULL,              
     	N_("_Default"), NULL,    
     	"Default",                  
@@ -84,7 +88,7 @@ static const gchar *ui_info =
 "        <menuitem action='Copy'/>"
 "        <menuitem action='Paste'/>"
 "    </menu>"
-"    <menu action='PreferencesMenu'>"
+"    <menu action='SettingMenu'>"
 "	<menuitem action='Font'/>"
 "	<menuitem action='Color'/>"
 "	<menuitem action='Terminal'/>"
@@ -93,6 +97,9 @@ static const gchar *ui_info =
 "			<menuitem action='GB2312'/>"
 "			<menuitem action='utf-8'/>"
 "		</menu>"
+"    </menu>"
+"    <menu action='BookMarksMenu'>"
+"      <menuitem action='bookmark'/>"
 "    </menu>"
 "    <menu action='HelpMenu'>"
 "      <menuitem action='About'/>"
