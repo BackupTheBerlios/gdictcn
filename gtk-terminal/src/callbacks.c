@@ -1,3 +1,12 @@
+/*
+ * gtk-terminal 
+ * Author: Dave Young <lonelypenguin@gmail.com> 
+ *
+ * This software is released under the GNU General Public License (GNU GPL).
+ * Please read the included file COPYING for more information.
+ * This software comes with no warranty of any kind, use at your own risk!
+ */
+
 #ifdef HAVE_CONFIG_H
 #  	include <config.h>
 #endif
@@ -101,12 +110,14 @@ void cb_about (GtkMenuItem     *menuitem,
 void cb_change_font (GtkMenuItem     *menuitem, gpointer         user_data)
 {
 	MainWin * mw;
+	confinfo * cf;
 	VteTerminal * vt;
 	gchar *currentname,* fontname;
 	gint columns,rows,owidth,oheight;
 
 	mw=(MainWin *)user_data;
 	vt=(VteTerminal *)mw->vte_terminal;	
+	cf=mw->cf;
 	
 	columns = vt->column_count;
 	rows = vt->row_count;
@@ -116,6 +127,8 @@ void cb_change_font (GtkMenuItem     *menuitem, gpointer         user_data)
 	currentname =(gchar *)pango_font_description_to_string(vte_terminal_get_font(VTE_TERMINAL(vt)));
 	fontname =get_font_name_by_selector(mw->window,currentname);
 	if(fontname){
+		memset(cf->fontname,0,sizeof(cf->fontname));
+		strcpy(cf->fontname,fontname);
 		vte_terminal_set_font_from_string_full(VTE_TERMINAL(vt),fontname,TRUE);
 		gtk_window_resize(GTK_WINDOW(mw->window),
 				columns * vt->char_width + owidth,
@@ -132,7 +145,8 @@ void cb_defcharset(GtkMenuItem     *menuitem, gpointer         user_data)
 
 	mw=(MainWin *)user_data;
 	cf=mw->cf;
-	cf->charset=cf->defcharset;
+	memset(cf->charset,0,sizeof(cf->charset));
+	strncpy(cf->charset,cf->defcharset,strlen(cf->defcharset));
 	vte_terminal_set_encoding(VTE_TERMINAL(mw->vte_terminal),cf->charset);
 }
 
@@ -143,7 +157,8 @@ void cb_gb2312(GtkMenuItem     *menuitem, gpointer         user_data)
 
 	mw=(MainWin *)user_data;
 	cf=mw->cf;
-	cf->charset="GB2312";
+	memset(cf->charset,0,sizeof(cf->charset));
+	sprintf(cf->charset,"GB2312");
 	vte_terminal_set_encoding(VTE_TERMINAL(mw->vte_terminal),"gb2312");
 }
 void cb_utf8(GtkMenuItem     *menuitem, gpointer         user_data)
@@ -153,7 +168,8 @@ void cb_utf8(GtkMenuItem     *menuitem, gpointer         user_data)
 
 	mw=(MainWin *)user_data;
 	cf=mw->cf;
-	cf->charset="utf-8";
+	memset(cf->charset,0,sizeof(cf->charset));
+	sprintf(cf->charset,"utf-8");
 	vte_terminal_set_encoding(VTE_TERMINAL(mw->vte_terminal),"utf-8");
 }
 
@@ -181,6 +197,16 @@ void cb_paste (GtkWidget      *menuitem, gpointer user_data)
       	vte_terminal_paste_clipboard (VTE_TERMINAL(mw->vte_terminal));
 }
 
+void cb_save(GtkWidget      *menuitem, gpointer user_data)
+{
+ 	MainWin * mw;
+	confinfo * cf;
+
+	mw=(MainWin *)user_data;
+	cf=mw->cf;
+	save_options(cf);
+}
+
 void change_terminal_color(GtkWidget * button,gpointer user_data)
 {
 	colorbuttons * colorbs;
@@ -192,6 +218,13 @@ void change_terminal_color(GtkWidget * button,gpointer user_data)
 	gtk_color_button_get_color(colorbs->bgb,&colorbs->bg_color);
 	vte_terminal_set_color_foreground(vt,&colorbs->fg_color);
 	vte_terminal_set_color_background(vt,&colorbs->bg_color);
+	colorbs->mw->cf->fg_red=colorbs->fg_color.red;
+	colorbs->mw->cf->fg_green=colorbs->fg_color.green;
+	colorbs->mw->cf->fg_blue=colorbs->fg_color.blue;
+
+	colorbs->mw->cf->bg_red=colorbs->bg_color.red;
+	colorbs->mw->cf->bg_green=colorbs->bg_color.green;
+	colorbs->mw->cf->bg_blue=colorbs->bg_color.blue;
 }
 
  

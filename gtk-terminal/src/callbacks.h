@@ -1,3 +1,12 @@
+/*
+ * gtk-terminal 
+ * Author: Dave Young <lonelypenguin@gmail.com> 
+ *
+ * This software is released under the GNU General Public License (GNU GPL).
+ * Please read the included file COPYING for more information.
+ * This software comes with no warranty of any kind, use at your own risk!
+ */
+
 #ifndef CALLBACKS_H
 #define CALLBACKS_H
 void destroy_and_quit(GtkWidget *widget, gpointer data);
@@ -11,6 +20,7 @@ void cb_utf8(GtkMenuItem     *menuitem, gpointer         user_data);
 void cb_cut(GtkWidget      *menuitem, gpointer user_data);
 void cb_copy(GtkWidget      *menuitem, gpointer user_data);
 void cb_paste (GtkWidget      *menuitem, gpointer user_data);
+void cb_save (GtkWidget      *menuitem, gpointer user_data);
 void change_terminal_color(GtkWidget * button,gpointer user_data); 
 void iconify_window(GtkWidget *widget, gpointer data);
 void deiconify_window(GtkWidget *widget, gpointer data);

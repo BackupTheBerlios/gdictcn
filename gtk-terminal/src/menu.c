@@ -1,3 +1,12 @@
+/*
+ * gtk-terminal 
+ * Author: Dave Young <lonelypenguin@gmail.com> 
+ *
+ * This software is released under the GNU General Public License (GNU GPL).
+ * Please read the included file COPYING for more information.
+ * This software comes with no warranty of any kind, use at your own risk!
+ */
+
 #ifdef HAVE_CONFIG_H
 #  	include <config.h>
 #endif
@@ -52,6 +61,10 @@ static GtkActionEntry entries[] = {
     	N_("_Terminal"), NULL,    
     	"Terminal",                  
     	G_CALLBACK (activate_action) },
+  	{ "Save", GTK_STOCK_SAVE,     
+    	N_("_Save"), NULL,    
+    	"Save",                  
+    	G_CALLBACK (cb_save) },
   	{ "Submenu", NULL, N_("_Charset") },   
   	{ "bookmark", NULL,              
     	N_("_Bookmarks"), NULL,    
@@ -97,6 +110,7 @@ static const gchar *ui_info =
 "			<menuitem action='GB2312'/>"
 "			<menuitem action='utf-8'/>"
 "		</menu>"
+"	<menuitem action='Save'/>"
 "    </menu>"
 "    <menu action='BookMarksMenu'>"
 "      <menuitem action='bookmark'/>"
@@ -202,6 +216,12 @@ void create_color_dialog(GtkMenuItem     *menuitem, gpointer         user_data)
 
 	if(!cbs.mw){
 		cbs.mw=(MainWin *)user_data;
+		fg.red = cbs.mw->cf->fg_red;
+		fg.green= cbs.mw->cf->fg_green;
+		fg.blue= cbs.mw->cf->fg_blue;
+		bg.red = cbs.mw->cf->bg_red;
+		bg.green= cbs.mw->cf->bg_green;
+		bg.blue= cbs.mw->cf->bg_blue;
 		memcpy(&cbs.fg_color,&fg,sizeof(fg));
 		memcpy(&cbs.bg_color,&bg,sizeof(bg));
 	}

@@ -1,9 +1,9 @@
 bin_PROGRAMS = gtk-terminal 
 
-gtk_terminal_SOURCES = main.c window.c callbacks.c menu.c font.c 
+gtk_terminal_SOURCES = main.c window.c callbacks.c menu.c font.c rcfile.c 
 gtk_terminal_LDADD = $(DEPS_LIBS)
 
-noinst_HEADERS= gtk-terminal.h window.h callbacks.h menu.h font.h i18n.h
+noinst_HEADERS= gtk-terminal.h window.h callbacks.h menu.h font.h i18n.h rcfile.h
 
 AM_CPPFLAGS = $(DEPS_CFLAGS) \
 		-DLOCALE_DIR=\""$(datadir)/locale"\" \
