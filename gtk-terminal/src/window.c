@@ -11,6 +11,7 @@
 #  include <config.h>
 #endif
 #include "gtk-terminal.h"
+#include "util.h"
 
 confinfo cf;
 MainWin mainwin; 
@@ -22,14 +23,16 @@ MainWin *create_main_window(void)
  	GtkWidget *menubar;
       	GtkUIManager *ui;
  	GtkWidget *vt;
- 	//GdkPixbuf *icon;
+ 	GdkPixbuf *icon=NULL,*transparent ;
 	MainWin *mw = &mainwin; 
 	GdkColor bg={0,0xffff,0xffff,0xffff};
 	GdkColor fg={0,0x0000,0x0000,0x0000};
-	GdkColor tint={0,0x0000,0x0000,0x0000};
 	GdkColor highlight={0,0xc000,0xc000,0xc000};
 	//GdkColor cursor={0,0xffff,0x8000,0x8000};
 	gchar * enc;
+	gchar * shell;
+	gchar * home_dir;
+	gchar * filename;
 	
 	memset(&cf,0,sizeof(cf));
 	sprintf(cf.fontname,"Monospace 14");
@@ -40,6 +43,16 @@ MainWin *create_main_window(void)
 	cf.bg_red=0xffff;
 	cf.bg_green=0xffff;
 	cf.bg_blue=0xffff;
+	cf.allow_bold=TRUE;
+	cf.bell=TRUE;
+	cf.cursor_blinks=TRUE;
+	cf.scroll_output=FALSE;
+	cf.scroll_key=TRUE;
+	cf.scrollback_lines=80;
+	memset(cf.word_chars,0,sizeof(cf.word_chars));
+	strcpy(cf.word_chars,"-A-Za-z0-9,/?%&#:_");
+	cf.backspace_style=VTE_ERASE_ASCII_DELETE;
+	cf.delete_style=VTE_ERASE_DELETE_SEQUENCE;
 	
 	load_options(&cf);	
 	fg.red=cf.fg_red;
@@ -50,16 +63,16 @@ MainWin *create_main_window(void)
 	bg.blue=cf.bg_blue;
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("gtk-terminal"));
-/*	icon = gdk_pixbuf_new_from_file(
-		ICONDIR G_DIR_SEPARATOR_S PACKAGE ".png", NULL);
+  	filename = g_build_filename(PIXMAPS_DIR,"gtk-terminal.png",NULL);
+  	if (filename)
+    	{
+      		icon = gdk_pixbuf_new_from_file (filename, NULL);
+      		g_free (filename);
+      		transparent = gdk_pixbuf_add_alpha (icon, TRUE, 0xff, 0xff, 0xff);
+    	}
 	gtk_window_set_icon(GTK_WINDOW(window), icon);
 	if (icon)
 		g_object_unref(icon);
-	g_signal_connect(G_OBJECT(window), "delete-event",
-		G_CALLBACK(on_file_quit), NULL);
-	g_signal_connect_after(G_OBJECT(window), "delete-event",
-		G_CALLBACK(gtk_widget_hide_on_delete), NULL);
-*/
 	
 	vbox = gtk_vbox_new(FALSE, 5);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -84,28 +97,45 @@ MainWin *create_main_window(void)
 	char_size_changed(vt, 0, 0, mw);
 	g_signal_connect(G_OBJECT(vt), "char-size-changed",
 				 G_CALLBACK(char_size_changed), mw);
-	vte_terminal_set_audible_bell(VTE_TERMINAL(vt), TRUE);
+	vte_terminal_set_allow_bold(VTE_TERMINAL(vt), cf.allow_bold);
+	vte_terminal_set_audible_bell(VTE_TERMINAL(vt), cf.bell);
 	vte_terminal_set_visible_bell(VTE_TERMINAL(vt), FALSE);
-	vte_terminal_set_cursor_blinks(VTE_TERMINAL(vt), FALSE);
+	vte_terminal_set_cursor_blinks(VTE_TERMINAL(vt),cf.cursor_blinks);
 	vte_terminal_set_scroll_background(VTE_TERMINAL(vt), TRUE);
-	vte_terminal_set_scroll_on_output(VTE_TERMINAL(vt), FALSE);
-	vte_terminal_set_scroll_on_keystroke(VTE_TERMINAL(vt), TRUE);
-	vte_terminal_set_scrollback_lines(VTE_TERMINAL(vt), 80);
+	vte_terminal_set_scroll_on_output(VTE_TERMINAL(vt), cf.scroll_output);
+	vte_terminal_set_scroll_on_keystroke(VTE_TERMINAL(vt), cf.scroll_key);
+	vte_terminal_set_scrollback_lines(VTE_TERMINAL(vt), cf.scrollback_lines);
+	vte_terminal_set_word_chars(VTE_TERMINAL(vt), cf.word_chars);
 	vte_terminal_set_mouse_autohide(VTE_TERMINAL(vt), TRUE);
+	vte_terminal_set_backspace_binding(VTE_TERMINAL(vt), cf.backspace_style);
+	vte_terminal_set_delete_binding(VTE_TERMINAL(vt), cf.delete_style);
 
-	vte_terminal_set_background_tint_color(VTE_TERMINAL(vt), &tint);
+	vte_terminal_set_background_tint_color(VTE_TERMINAL(vt), &bg);
 	vte_terminal_set_colors(VTE_TERMINAL(vt), &fg, &bg, NULL, 0);
 	vte_terminal_set_color_highlight(VTE_TERMINAL(vt),&highlight);
 						 
 	//vte_terminal_set_color_cursor(VTE_TERMINAL(vt), &cursor);
 	//vte_terminal_set_emulation(VTE_TERMINAL(vt), "linux");
 
-	vte_terminal_fork_command(VTE_TERMINAL(vt),
+	shell = (gchar *)get_user_shell();
+	home_dir = (gchar *)get_home_dir();
+	if(!shell)
+		vte_terminal_fork_command(VTE_TERMINAL(vt),
 					  "bash", NULL, NULL,
-					  "~",
+					  home_dir,
 					  TRUE, TRUE, TRUE);
+	else {
+		vte_terminal_fork_command(VTE_TERMINAL(vt),
+					  shell, NULL, NULL,
+					  home_dir,
+					  TRUE, TRUE, TRUE);
+		g_free(shell);
+	}
+	g_free(home_dir);
 	gtk_box_pack_start(GTK_BOX(vbox), vt, TRUE, TRUE, 0);
 
+	g_signal_connect(G_OBJECT(vt), "window-title-changed",
+			 G_CALLBACK(window_title_changed), window);
 	g_signal_connect(G_OBJECT(vt), "iconify-window",
 			 G_CALLBACK(iconify_window), mw);
 	g_signal_connect(G_OBJECT(vt), "deiconify-window",

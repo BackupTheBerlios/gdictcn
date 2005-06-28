@@ -53,7 +53,7 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_gtk_terminal_OBJECTS = main.$(OBJEXT) window.$(OBJEXT) \
 	callbacks.$(OBJEXT) menu.$(OBJEXT) font.$(OBJEXT) \
-	rcfile.$(OBJEXT)
+	rcfile.$(OBJEXT) util.$(OBJEXT)
 gtk_terminal_OBJECTS = $(am_gtk_terminal_OBJECTS)
 am__DEPENDENCIES_1 =
 gtk_terminal_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -160,9 +160,9 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-gtk_terminal_SOURCES = main.c window.c callbacks.c menu.c font.c rcfile.c 
+gtk_terminal_SOURCES = main.c window.c callbacks.c menu.c font.c rcfile.c util.c 
 gtk_terminal_LDADD = $(DEPS_LIBS)
-noinst_HEADERS = gtk-terminal.h window.h callbacks.h menu.h font.h i18n.h rcfile.h
+noinst_HEADERS = gtk-terminal.h window.h callbacks.h menu.h font.h i18n.h rcfile.h util.h
 AM_CPPFLAGS = $(DEPS_CFLAGS) \
 		-DLOCALE_DIR=\""$(datadir)/locale"\" \
 	      -DPIXMAPS_DIR=\""$(datadir)/pixmaps"\" 
@@ -242,6 +242,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/menu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rcfile.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/window.Po@am__quote@
 
 .c.o:

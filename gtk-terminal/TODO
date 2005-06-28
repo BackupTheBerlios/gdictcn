@@ -1,0 +1,20 @@
+ version 0.2
+1. window title (initial and dynamic) (???)
+2. icon (ok)
+3. blink / bell /select word ""
+4. get login shell (ok) 
+5. tabbed terminal
+
+ version 0.3
+1. color scheme
+2. background image(scrollable) / transparent
+3. scroll bar ?? (scroll lines and memory limiting; scroll on output/keystroke) 
+4. backspace and delete key setting /terminal type (xterm/linux)
+5. encoding enhance (more encoding selectiong)
+
+ version 0.4
+1. remote shell bookmarks
+2. source code cleanning
+
+version 0.5
+1. fullscreen support (just like linux console mode, no menu /no scroolbar)

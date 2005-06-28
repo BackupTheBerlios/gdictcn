@@ -10,17 +10,19 @@
 
 #include "gtk-terminal.h"
 #include "rcfile.h"
+#include "util.h"
 
 static gchar * rcfile_path(void)
 {
   	gchar *path = NULL;
   	const gchar *home_dir;
 
-  	home_dir = g_get_home_dir ();
+  	home_dir = (gchar *)get_home_dir ();
   	if (home_dir){
       		path = g_build_filename (home_dir,RCFILE, NULL);
 	}
 
+	g_free((gpointer)home_dir);
 	return path;
 }
 
@@ -62,7 +64,7 @@ static void write_char_option(FILE *f, gchar *label, gchar *text)
 static gchar *read_char_option(FILE *f, gchar *option, gchar *label, gchar *value)
 {
 	if (strcasecmp(option, label) == 0){
-		return quoted_value(value);
+		return value;
 	}
 	return NULL;
 }
@@ -74,20 +76,36 @@ static void write_int_option(FILE *f, gchar *label, gint n)
 
 static gint read_int_option(FILE *f, gchar *option, gchar *label, gchar *value)
 {
-	char * va;
 	gint vaint;
-	va=quoted_value(value);
-	if(va){
-		vaint=atoi(va);
-		g_free(va);
-	}else
-		vaint=-1;
+
+	vaint=atoi(value);
 	
-	if (strcasecmp(option, label) == 0)
+	if (strcasecmp(option, label) == 0){
+		g_free(value);
 		return vaint;
+	}
 	return -1;
 }
 
+static void write_bool_option(FILE *f, gchar *label, gboolean bol)
+{
+	if(bol)
+		fprintf(f,"%s: \"TRUE\"\n\n", label);
+	else
+		fprintf(f,"%s: \"FALSE\"\n\n", label);
+}
+
+static gint read_bool_option(FILE *f,gchar *option, gchar *label, gchar *value , gboolean * bol)
+{
+	if (strcasecmp(option, label) == 0){
+		if(strncmp(value,"TRUE",4))
+			*bol=FALSE;
+		else
+			*bol=TRUE;
+		return 0;
+	}
+	return 1;
+}
 
 /*
  * save configuration
@@ -156,6 +174,7 @@ void load_options(confinfo *cf)
 	gchar * tmp;
 	gchar option[1024]={'0',};
 	gchar value[1024]={'0',};
+	gchar * va=NULL;
 	gint i,j,len;
 	gchar * fontname=NULL;
 	gchar * charset=NULL;
@@ -195,63 +214,58 @@ void load_options(confinfo *cf)
 		strncpy(option,tmp,j-i);
 		s_buf_ptr= s_buf+j;
 		strncpy(value,s_buf_ptr,strlen(s_buf_ptr));
-/*
-		c = 0;
-		l = strlen(s_buf);
-		while (s_buf[c] != ':' && c < l) c++;
-		s_buf_ptr = s_buf + c;
-		//if (c >= l) continue;
-		s_buf[c] = '\0';
-		//c++;
-		//while ((s_buf[c] == ' ' || s_buf[c] == 8) && c < l) c++;
-		//s_buf_ptr = s_buf + c;
-		strncpy(value_all, s_buf_ptr, sizeof(value_all));
-		//while (s_buf[c] != 8 && s_buf[c] != ' ' && s_buf[c] != '\n' && c < l) c++;
-		//s_buf[c] = '\0';
-		strncpy(option, s_buf, sizeof(option));
-		strncpy(value, s_buf_ptr, sizeof(value));
-*/	
+		va = quoted_value(value);
+		if(!va)
+			continue;
+
 		if(!fontname){
-			fontname = read_char_option(f, option,"fontname", value);
+			fontname = read_char_option(f, option,"fontname", va);
 			if(fontname)
 				continue;
 		}
 		if(!charset){
-			charset = read_char_option(f, option,"charset", value);
+			charset = read_char_option(f, option,"charset", va);
 			if(charset)
 				continue;
 		}
 		if(fg_red == -1){
-			fg_red = read_int_option(f, option,"fg_red", value);
+			fg_red = read_int_option(f, option,"fg_red", va);
 			if(fg_red!=-1)
 				continue;
 		}
 		if(fg_green == -1){
-			fg_green= read_int_option(f, option,"fg_green", value);
-			if(fg_green!=-1)
+			fg_green= read_int_option(f, option,"fg_green", va);
+			if(fg_green!=-1){
 				continue;
+			}
 		}
 		if(fg_blue == -1){
-			fg_blue = read_int_option(f, option,"fg_blue", value);
-			if(fg_blue!=-1)
+			fg_blue = read_int_option(f, option,"fg_blue", va);
+			if(fg_blue!=-1){
 				continue;
+			}
 		}
 		if(bg_red == -1){
-			bg_red = read_int_option(f, option,"bg_red", value);
-			if(bg_red!=-1)
+			bg_red = read_int_option(f, option,"bg_red", va);
+			if(bg_red!=-1){
 				continue;
+			}
 		}
 		if(bg_green == -1){
-			bg_green= read_int_option(f, option,"bg_green", value);
-			if(bg_green!=-1)
+			bg_green= read_int_option(f, option,"bg_green", va);
+			if(bg_green!=-1){
 				continue;
+			}
 		}
 		if(bg_blue == -1){
-			bg_blue = read_int_option(f, option,"bg_blue", value);
-			if(bg_blue!=-1)
+			bg_blue = read_int_option(f, option,"bg_blue", va);
+			if(bg_blue!=-1){
 				continue;
+			}
 		}
 			
+		if(va)
+			g_free(va);
 /*
 		layout_view_tree = read_bool_option(f, option,
 			"layout_view_as_tree", value, layout_view_tree);
@@ -259,27 +273,36 @@ void load_options(confinfo *cf)
 			"max_window_size", value, max_window_size);
 */
 	}
-	if(fontname && 
-			charset && 
-			(fg_red !=-1) &&
+	if(fontname){
+		int len;
+	
+		len=(strlen(fontname)>sizeof(cf->fontname))?sizeof(cf->fontname):strlen(fontname);
+		memset(cf->fontname,0,sizeof(cf->fontname));
+		strncpy(cf->fontname,fontname,len);
+		g_free(fontname);
+	}
+	if(charset){
+		int len;
+
+		len=(strlen(charset)>sizeof(cf->charset))?sizeof(cf->charset):strlen(charset);
+		memset(cf->charset,0,sizeof(cf->charset));
+		strncpy(cf->charset,charset,len);
+		g_free(charset);
+	}
+	if((fg_red !=-1) &&
 			(fg_green !=-1)	&&
 			(fg_blue !=-1) &&
 			(bg_red !=-1) &&
 			(bg_green !=-1) &&
 			(bg_blue !=-1)) { 
-		
-		memset(cf,0,sizeof(confinfo));
-		strcpy(cf->fontname,fontname);
-		strcpy(cf->charset,charset);
 		cf->fg_red=fg_red;
 		cf->fg_green=fg_green;
 		cf->fg_blue=fg_blue;
 		cf->bg_red=bg_red;
 		cf->bg_green=bg_green;
 		cf->bg_blue=bg_blue;
-		g_free(fontname);
-		g_free(charset);
 	}
+	
 	fclose(f);
 }
 

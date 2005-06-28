@@ -20,7 +20,17 @@ typedef struct {
 	gushort bg_red;
 	gushort bg_green;
 	gushort bg_blue;
+	gboolean allow_bold;
+	gboolean bell;
+	gboolean cursor_blinks;
+	gboolean scroll_output;
+	gboolean scroll_key;
+	gint scrollback_lines;
+	gchar word_chars[256];
+	gint backspace_style;
+	gint delete_style;
 }confinfo;
+
 typedef struct {
 	GtkWidget *window;
 	GtkWidget *menubar;

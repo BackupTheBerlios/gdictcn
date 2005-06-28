@@ -13,12 +13,14 @@
 
 #include <string.h>
 #include <gtk/gtk.h>
+#include <vte/vte.h>
 #include "menu.h"
 #include "i18n.h"
 #include "callbacks.h"
 
 
 colorbuttons cbs;
+terminal_setting_data tsd;
 
 static void activate_action (GtkAction *action)
 {
@@ -60,7 +62,7 @@ static GtkActionEntry entries[] = {
   	{ "Terminal", GTK_STOCK_PROPERTIES,     
     	N_("_Terminal"), NULL,    
     	"Terminal",                  
-    	G_CALLBACK (activate_action) },
+    	G_CALLBACK (create_terminal_dialog) },
   	{ "Save", GTK_STOCK_SAVE,     
     	N_("_Save"), NULL,    
     	"Save",                  
@@ -83,7 +85,7 @@ static GtkActionEntry entries[] = {
     	"utf-8",                
     	G_CALLBACK (cb_utf8) },
   	{ "About", GTK_STOCK_ABOUT,         
-   	N_("_About"), "<control>A",
+   	N_("_About"), NULL,
     	"About",              
     	G_CALLBACK (cb_about) },
 };
@@ -280,4 +282,125 @@ void create_color_dialog(GtkMenuItem     *menuitem, gpointer         user_data)
       	g_signal_connect_swapped(button_ok, "clicked",
 			G_CALLBACK (gtk_widget_destroy),
                         cw);
+}
+
+static gint get_combo_index(VteTerminalEraseBinding bind)
+{
+	switch(bind){
+		case VTE_ERASE_ASCII_DELETE:
+			return 0;
+		case VTE_ERASE_DELETE_SEQUENCE:
+			return 1;
+		case VTE_ERASE_ASCII_BACKSPACE:
+			return 2;
+		default:
+			return 0;
+	}
+	return 0;
+}
+
+void create_terminal_dialog(GtkMenuItem     *menuitem, gpointer         user_data)
+{
+	MainWin *mw=(MainWin *)user_data;
+	GtkWidget *dialog;	
+	GtkWidget * vbox;
+	GtkWidget *hbox1,*hbox2,*hbox3,*hbox4;	
+	GtkWidget *cb_bold,*cb_blinks,*cb_bell,*cb_scroll_output,*cb_scroll_key;
+	GtkWidget *label_scroll,*spin_lines,*label_lines;//,*spin_kilo;
+	GtkAdjustment *lines_adj;//,*kilo_adj;
+	GtkWidget *label_words,*entry_words;
+  	GtkListStore *store;
+  	GtkTreeIter iter;
+  	GtkCellRenderer *cell = gtk_cell_renderer_text_new ();
+	GtkWidget *label_backspace,*combo_backspace;
+	GtkWidget *label_delete,*combo_delete;
+	GtkWidget *button_ok;	
+
+	dialog = gtk_dialog_new();
+	vbox = GTK_DIALOG(dialog)->vbox;
+
+	cb_bold = gtk_check_button_new_with_label(_("Allow bold text"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cb_bold),mw->cf->allow_bold);
+	gtk_box_pack_start(GTK_BOX(vbox),cb_bold,FALSE,FALSE,5);
+
+	cb_blinks = gtk_check_button_new_with_label(_("Cursor blinks"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cb_blinks),mw->cf->cursor_blinks);
+	gtk_box_pack_start(GTK_BOX(vbox),cb_blinks,FALSE,FALSE,5);
+
+	cb_bell = gtk_check_button_new_with_label(_("Terminal bell"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cb_bell),mw->cf->bell);
+	gtk_box_pack_start(GTK_BOX(vbox),cb_bell,FALSE,FALSE,5);
+
+	cb_scroll_output = gtk_check_button_new_with_label(_("Scroll on output"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cb_scroll_output),mw->cf->scroll_output);
+	gtk_box_pack_start(GTK_BOX(vbox),cb_scroll_output,FALSE,FALSE,5);
+
+	cb_scroll_key= gtk_check_button_new_with_label(_("Scroll on keystroke"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cb_scroll_key),mw->cf->scroll_key);
+	gtk_box_pack_start(GTK_BOX(vbox),cb_scroll_key,FALSE,FALSE,5);
+
+	hbox1= gtk_hbox_new(FALSE,5);
+	label_scroll = gtk_label_new(_("scrollback"));
+
+   	lines_adj= (GtkAdjustment *) gtk_adjustment_new (mw->cf->scrollback_lines, 1, 100000, 1, 5,0);
+   	//kilo_adj= (GtkAdjustment *) gtk_adjustment_new (1, 1, 100000, 1, 5,0);
+   
+	spin_lines = gtk_spin_button_new (lines_adj, 1.0, 0);
+	label_lines = gtk_label_new(_("lines"));
+	//spin_kilo = gtk_spin_button_new (kilo_adj, 1.0, 0);
+	gtk_box_pack_start(GTK_BOX(hbox1),label_scroll,FALSE,FALSE,5);
+	gtk_box_pack_start(GTK_BOX(hbox1),spin_lines,FALSE,FALSE,5);
+	gtk_box_pack_start(GTK_BOX(hbox1),label_lines,FALSE,FALSE,5);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox1,FALSE,FALSE,5);
+
+
+	hbox2= gtk_hbox_new(FALSE,5);
+	label_words = gtk_label_new(_("select-by-word characters"));
+	entry_words = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(entry_words),mw->cf->word_chars);
+	gtk_box_pack_start(GTK_BOX(hbox2),label_words,FALSE,FALSE,5);
+	gtk_box_pack_start(GTK_BOX(hbox2),entry_words,FALSE,FALSE,5);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox2,FALSE,FALSE,5);
+
+ 	store = gtk_list_store_new (2,G_TYPE_STRING,G_TYPE_INT);
+        gtk_list_store_append (store, &iter);
+        gtk_list_store_set (store, &iter,
+                            	0,_("ASCII DEL"),
+				1,VTE_ERASE_ASCII_DELETE,
+                            	-1);
+        gtk_list_store_append (store, &iter);
+        gtk_list_store_set (store, &iter,
+                            	0,_("Escape sequence"),
+				1,VTE_ERASE_DELETE_SEQUENCE,
+                            	-1);
+        gtk_list_store_append (store, &iter);
+        gtk_list_store_set (store, &iter,
+                            	0,_("Control-H"),
+				1,VTE_ERASE_ASCII_BACKSPACE,
+                            	-1);
+
+	hbox3= gtk_hbox_new(FALSE,5);
+	label_backspace = gtk_label_new(_("backspace"));
+	combo_backspace = gtk_combo_box_new_with_model (GTK_TREE_MODEL(store));
+  	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT(combo_backspace),cell,FALSE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combo_backspace),cell,"text",0,NULL);
+        gtk_combo_box_set_active (GTK_COMBO_BOX (combo_backspace), get_combo_index(mw->cf->backspace_style));
+
+	gtk_box_pack_start(GTK_BOX(hbox3),label_backspace,FALSE,FALSE,5);
+	gtk_box_pack_start(GTK_BOX(hbox3),combo_backspace,FALSE,FALSE,5);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox3,FALSE,FALSE,5);
+
+	hbox4= gtk_hbox_new(FALSE,5);
+	label_delete= gtk_label_new(_("delete"));
+	combo_delete = gtk_combo_box_new_with_model (GTK_TREE_MODEL(store));
+  	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT(combo_delete),cell,FALSE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combo_delete),cell,"text",0,NULL);
+        gtk_combo_box_set_active (GTK_COMBO_BOX (combo_delete), get_combo_index(mw->cf->delete_style));
+        g_object_unref (store);
+	gtk_box_pack_start(GTK_BOX(hbox4),label_delete,FALSE,FALSE,5);
+	gtk_box_pack_start(GTK_BOX(hbox4),combo_delete,FALSE,FALSE,5);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox4,FALSE,FALSE,5);
+
+	button_ok = gtk_dialog_add_button(GTK_DIALOG(dialog),GTK_STOCK_OK,GTK_RESPONSE_ACCEPT);
+	gtk_widget_show_all(GTK_WIDGET(dialog));
 }

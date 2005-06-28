@@ -462,3 +462,16 @@ void decrease_font_size(GtkWidget *widget, gpointer data)
 {
 	adjust_font_size(widget, data, -1);
 }
+
+void window_title_changed(GtkWidget *widget, gpointer win)
+{
+	GtkWindow *window;
+
+	g_return_if_fail(VTE_TERMINAL(widget));
+	g_return_if_fail(GTK_IS_WINDOW(win));
+	g_return_if_fail(VTE_TERMINAL(widget)->window_title != NULL);
+	window = GTK_WINDOW(win);
+
+	gtk_window_set_title(window, VTE_TERMINAL(widget)->window_title);
+}
+

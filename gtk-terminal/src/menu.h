@@ -19,8 +19,20 @@ typedef struct{
 	GdkColor bg_color;
 	GdkColor fg_color;
 }colorbuttons;
+
+typedef struct{
+	MainWin *mw;
+	GtkWidget *dialog;	
+	GtkWidget *cb_bold,*cb_blinks,*cb_bell,*cb_scroll_output,*cb_scroll_key;
+	GtkWidget *label_scroll,*spin_lines,*spin_kilo;
+	GtkWidget *label_words,*entry_words;
+	GtkWidget *label_backspace,*combo_backspace;
+	GtkWidget *label_delete,*combo_delete;
+}terminal_setting_data;
+
 GtkUIManager *create_ui_manager(MainWin *mw);
 void terminal_popup_menu(GtkWidget *widget,GdkEventButton * event, gpointer data);
 void create_color_dialog(GtkMenuItem     *menuitem, gpointer         user_data);
+void create_terminal_dialog(GtkMenuItem     *menuitem, gpointer         user_data);
 
 #endif /* _MENU_H */
