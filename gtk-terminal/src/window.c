@@ -115,7 +115,7 @@ MainWin *create_main_window(void)
 	vte_terminal_set_color_highlight(VTE_TERMINAL(vt),&highlight);
 						 
 	//vte_terminal_set_color_cursor(VTE_TERMINAL(vt), &cursor);
-	//vte_terminal_set_emulation(VTE_TERMINAL(vt), "linux");
+	vte_terminal_set_emulation(VTE_TERMINAL(vt), "xterm");
 
 	shell = (gchar *)get_user_shell();
 	home_dir = (gchar *)get_home_dir();

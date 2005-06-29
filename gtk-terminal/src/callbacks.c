@@ -475,3 +475,71 @@ void window_title_changed(GtkWidget *widget, gpointer win)
 	gtk_window_set_title(window, VTE_TERMINAL(widget)->window_title);
 }
 
+static void terminal_setting_ok(MainWin * mw)
+{
+	GtkWidget * vt;
+	confinfo * cf;
+
+	cf=mw->cf;
+	vt=mw->vte_terminal;
+
+	vte_terminal_set_allow_bold(VTE_TERMINAL(vt), cf->allow_bold);
+	vte_terminal_set_audible_bell(VTE_TERMINAL(vt), cf->bell);
+	vte_terminal_set_cursor_blinks(VTE_TERMINAL(vt),cf->cursor_blinks);
+	vte_terminal_set_scroll_on_output(VTE_TERMINAL(vt), cf->scroll_output);
+	vte_terminal_set_scroll_on_keystroke(VTE_TERMINAL(vt), cf->scroll_key);
+	vte_terminal_set_scrollback_lines(VTE_TERMINAL(vt), cf->scrollback_lines);
+	vte_terminal_set_word_chars(VTE_TERMINAL(vt), cf->word_chars);
+	vte_terminal_set_backspace_binding(VTE_TERMINAL(vt), cf->backspace_style);
+	vte_terminal_set_delete_binding(VTE_TERMINAL(vt), cf->delete_style);
+}
+
+void cb_terminal_setting(GtkWidget *widget, gpointer data)
+{
+	terminal_setting_data * ts;	
+	MainWin *mw;
+	confinfo * cf;
+	gchar *word;
+	gint len=0;
+	gint active;
+	GtkTreeModel * model;
+  	GtkTreePath * path;	
+	GtkTreeIter iter;
+	GValue val={0,};
+
+	ts=(terminal_setting_data *)data;
+	mw = ts->mw;
+	cf = (confinfo *)mw->cf;
+
+	cf->allow_bold = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ts->cb_bold));
+	cf->bell = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ts->cb_bell));
+	cf->cursor_blinks = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ts->cb_blinks));
+	cf->scroll_output = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ts->cb_scroll_output));
+	cf->scroll_key = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ts->cb_scroll_key));
+	cf->scrollback_lines = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(ts->spin_lines));
+	word = (gchar *)gtk_entry_get_text(GTK_ENTRY(ts->entry_words));
+	len=(strlen(word)>sizeof(cf->word_chars))?sizeof(cf->word_chars):strlen(word);
+	memset(cf->word_chars,0,sizeof(cf->word_chars));
+	strncpy(cf->word_chars,word,len);
+
+	active = gtk_combo_box_get_active(GTK_COMBO_BOX(ts->combo_delete));
+	model = gtk_combo_box_get_model(GTK_COMBO_BOX(ts->combo_delete));
+	path = gtk_tree_path_new_from_indices(active,-1);
+	gtk_tree_model_get_iter(GTK_TREE_MODEL(model),&iter,path);	
+	
+	gtk_tree_model_get_value(GTK_TREE_MODEL(model),&iter,1,&val);	
+	cf->delete_style = val.data[0].v_int;
+	g_value_unset(&val);
+
+	active = gtk_combo_box_get_active(GTK_COMBO_BOX(ts->combo_backspace));
+	model = gtk_combo_box_get_model(GTK_COMBO_BOX(ts->combo_backspace));
+	path = gtk_tree_path_new_from_indices(active,-1);
+	gtk_tree_model_get_iter(GTK_TREE_MODEL(model),&iter,path);	
+	
+	gtk_tree_model_get_value(GTK_TREE_MODEL(model),&iter,1,&val);	
+	cf->backspace_style = val.data[0].v_int;
+	g_value_unset(&val);
+
+	terminal_setting_ok(mw);
+	gtk_widget_destroy(GTK_WIDGET(ts->dialog));	
+}

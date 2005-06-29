@@ -114,9 +114,9 @@ static const gchar *ui_info =
 "		</menu>"
 "	<menuitem action='Save'/>"
 "    </menu>"
-"    <menu action='BookMarksMenu'>"
-"      <menuitem action='bookmark'/>"
-"    </menu>"
+//"    <menu action='BookMarksMenu'>"
+//"      <menuitem action='bookmark'/>"
+//"    </menu>"
 "    <menu action='HelpMenu'>"
 "      <menuitem action='About'/>"
 "    </menu>"
@@ -302,6 +302,7 @@ static gint get_combo_index(VteTerminalEraseBinding bind)
 void create_terminal_dialog(GtkMenuItem     *menuitem, gpointer         user_data)
 {
 	MainWin *mw=(MainWin *)user_data;
+	GtkWidget *parent;	
 	GtkWidget *dialog;	
 	GtkWidget * vbox;
 	GtkWidget *hbox1,*hbox2,*hbox3,*hbox4;	
@@ -317,6 +318,13 @@ void create_terminal_dialog(GtkMenuItem     *menuitem, gpointer         user_dat
 	GtkWidget *button_ok;	
 
 	dialog = gtk_dialog_new();
+	parent = mw->window;
+      	gtk_window_set_title (GTK_WINDOW (dialog), _("terminal setting"));
+	gtk_window_set_resizable(GTK_WINDOW(dialog),FALSE);
+	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(parent));
+	gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog),TRUE);
+      	gtk_container_set_border_width (GTK_CONTAINER (dialog), 0);
+
 	vbox = GTK_DIALOG(dialog)->vbox;
 
 	cb_bold = gtk_check_button_new_with_label(_("Allow bold text"));
@@ -402,5 +410,20 @@ void create_terminal_dialog(GtkMenuItem     *menuitem, gpointer         user_dat
 	gtk_box_pack_start(GTK_BOX(vbox),hbox4,FALSE,FALSE,5);
 
 	button_ok = gtk_dialog_add_button(GTK_DIALOG(dialog),GTK_STOCK_OK,GTK_RESPONSE_ACCEPT);
+
+	tsd.mw=mw;
+	tsd.dialog=dialog;
+	tsd.cb_bold=cb_bold;
+	tsd.cb_blinks=cb_blinks;
+	tsd.cb_bell=cb_bell;
+	tsd.cb_scroll_output=cb_scroll_output;
+	tsd.cb_scroll_key=cb_scroll_key;
+	tsd.spin_lines=spin_lines;
+	tsd.entry_words=entry_words;
+	tsd.combo_delete=combo_delete;
+	tsd.combo_backspace=combo_backspace;
+
+	g_signal_connect(G_OBJECT(button_ok), "clicked",
+		G_CALLBACK(cb_terminal_setting), &tsd);
 	gtk_widget_show_all(GTK_WIDGET(dialog));
 }

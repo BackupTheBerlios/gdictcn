@@ -24,10 +24,10 @@ typedef struct{
 	MainWin *mw;
 	GtkWidget *dialog;	
 	GtkWidget *cb_bold,*cb_blinks,*cb_bell,*cb_scroll_output,*cb_scroll_key;
-	GtkWidget *label_scroll,*spin_lines,*spin_kilo;
-	GtkWidget *label_words,*entry_words;
-	GtkWidget *label_backspace,*combo_backspace;
-	GtkWidget *label_delete,*combo_delete;
+	GtkWidget *spin_lines;
+	GtkWidget *entry_words;
+	GtkWidget *combo_backspace;
+	GtkWidget *combo_delete;
 }terminal_setting_data;
 
 GtkUIManager *create_ui_manager(MainWin *mw);

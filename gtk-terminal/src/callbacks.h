@@ -36,4 +36,5 @@ void increase_font_size(GtkWidget *widget, gpointer data);
 void decrease_font_size(GtkWidget *widget, gpointer data);
 void char_size_changed(GtkWidget *widget, guint width, guint height, gpointer data);
 void window_title_changed(GtkWidget *widget, gpointer win);
+void cb_terminal_setting(GtkWidget *widget, gpointer data);
 #endif

@@ -71,7 +71,7 @@ static gchar *read_char_option(FILE *f, gchar *option, gchar *label, gchar *valu
 
 static void write_int_option(FILE *f, gchar *label, gint n)
 {
-	fprintf(f,"%s: \"%d\"\n\n", label, n);
+	fprintf(f,"%s: \"%d\"\n", label, n);
 }
 
 static gint read_int_option(FILE *f, gchar *option, gchar *label, gchar *value)
@@ -90,9 +90,9 @@ static gint read_int_option(FILE *f, gchar *option, gchar *label, gchar *value)
 static void write_bool_option(FILE *f, gchar *label, gboolean bol)
 {
 	if(bol)
-		fprintf(f,"%s: \"TRUE\"\n\n", label);
+		fprintf(f,"%s: \"TRUE\"\n", label);
 	else
-		fprintf(f,"%s: \"FALSE\"\n\n", label);
+		fprintf(f,"%s: \"FALSE\"\n", label);
 }
 
 static gint read_bool_option(FILE *f,gchar *option, gchar *label, gchar *value , gboolean * bol)
@@ -136,25 +136,24 @@ void save_options(confinfo * cf)
 	fprintf(f,"\n");
 
 	write_char_option(f, "fontname", cf->fontname);
-	fprintf(f,"\n");
 	write_char_option(f, "charset", cf->charset);
-	fprintf(f,"\n");
 	write_int_option(f, "fg_red", cf->fg_red);
-	fprintf(f,"\n");
 	write_int_option(f, "fg_green", cf->fg_green);
-	fprintf(f,"\n");
 	write_int_option(f, "fg_blue", cf->fg_blue);
-	fprintf(f,"\n");
 	write_int_option(f, "bg_red", cf->bg_red);
-	fprintf(f,"\n");
 	write_int_option(f, "bg_green", cf->bg_green);
-	fprintf(f,"\n");
 	write_int_option(f, "bg_blue", cf->bg_blue);
+	write_bool_option(f, "allow_bold", cf->allow_bold);
+	write_bool_option(f, "bell", cf->bell);
+	write_bool_option(f, "cursor_blinks", cf->cursor_blinks);
+	write_bool_option(f, "scroll_output", cf->scroll_output);
+	write_bool_option(f, "scroll_key", cf->scroll_key);
+	write_int_option(f, "scrollback_lines", cf->scrollback_lines);
+	write_char_option(f, "word_chars", cf->word_chars);
+	write_int_option(f, "backspace_style", cf->backspace_style);
+	write_int_option(f, "delete_style", cf->delete_style);
+
 	fprintf(f,"\n");
-/*
-	write_bool_option(f, "layout_view_as_icons", layout_view_icons);
-	write_int_option(f, "scroll_reset_method", scroll_reset_method);
-*/
 	fprintf(f,"#%%$*gtk-terminal config file\n");
 	fclose(f);
 }
@@ -175,11 +174,14 @@ void load_options(confinfo *cf)
 	gchar option[1024]={'0',};
 	gchar value[1024]={'0',};
 	gchar * va=NULL;
-	gint i,j,len;
+	gint i,j,len,size;
 	gchar * fontname=NULL;
 	gchar * charset=NULL;
 	gint fg_red=-1,fg_green=-1,fg_blue=-1,bg_red=-1,bg_green=-1,bg_blue=-1;
-
+	gboolean allow_bold,bell,cursor_blinks,scroll_output,scroll_key;
+	gint scrollback_lines=-1,backspace_style=-1,delete_style=-1;
+	gchar * word_chars=NULL;
+	
 	rc_path = rcfile_path();
 
 	if(!rc_path)
@@ -198,8 +200,6 @@ void load_options(confinfo *cf)
 
 	while (fgets(s_buf,1024,f)){
 		if (s_buf[0]=='#') {
-//			if(!(s_buf[1]=='%' && s_buf[2]=='$' && s_buf[3]=='*'))
-//				return;
 			continue;
 		}
 		if (s_buf[0]=='\n') continue;
@@ -230,77 +230,119 @@ void load_options(confinfo *cf)
 		}
 		if(fg_red == -1){
 			fg_red = read_int_option(f, option,"fg_red", va);
-			if(fg_red!=-1)
+			if(fg_red!=-1){
+				cf->fg_red=fg_red;
 				continue;
+			}
 		}
 		if(fg_green == -1){
 			fg_green= read_int_option(f, option,"fg_green", va);
 			if(fg_green!=-1){
+				cf->fg_green=fg_green;
 				continue;
 			}
 		}
 		if(fg_blue == -1){
 			fg_blue = read_int_option(f, option,"fg_blue", va);
 			if(fg_blue!=-1){
+				cf->fg_blue=fg_blue;
 				continue;
 			}
 		}
 		if(bg_red == -1){
 			bg_red = read_int_option(f, option,"bg_red", va);
 			if(bg_red!=-1){
+				cf->bg_red=bg_red;
 				continue;
 			}
 		}
 		if(bg_green == -1){
 			bg_green= read_int_option(f, option,"bg_green", va);
 			if(bg_green!=-1){
+				cf->bg_green=bg_green;
 				continue;
 			}
 		}
 		if(bg_blue == -1){
 			bg_blue = read_int_option(f, option,"bg_blue", va);
 			if(bg_blue!=-1){
+				cf->bg_blue=bg_blue;
 				continue;
 			}
+		}
+		if(!read_bool_option(f,option,"allow_bold",va,&allow_bold)){
+			cf->allow_bold=allow_bold;	
+			continue;
+		}
+		if(!read_bool_option(f,option,"bell",va,&bell)){
+			cf->bell=bell;
+			continue;
+		}
+		if(!read_bool_option(f,option,"cursor_blinks",va,&cursor_blinks)){
+			cf->cursor_blinks=cursor_blinks;
+			continue;
+		}
+		if(!read_bool_option(f,option,"scroll_output",va,&scroll_output)){
+			cf->scroll_output=scroll_output;
+			continue;
+		}
+		if(!read_bool_option(f,option,"scroll_key",va,&scroll_key)){
+			cf->scroll_key=scroll_key;	
+			continue;
+		}
+		if(scrollback_lines == -1){
+			scrollback_lines = read_int_option(f,option,"scrollback_lines",va);
+			if(scrollback_lines != -1){
+				cf->scrollback_lines=scrollback_lines;
+				continue;
+			}
+		}
+		if(backspace_style == -1){
+			backspace_style = read_int_option(f,option,"backspace_style",va);
+			if(backspace_style != -1){
+				cf->backspace_style=backspace_style;
+				continue;
+			}
+		}
+		if(delete_style == -1){
+			delete_style = read_int_option(f,option,"delete_style",va);
+			if(delete_style != -1){
+				cf->delete_style=delete_style;
+				continue;
+			}
+		}
+		if(!word_chars){
+			word_chars = read_char_option(f, option,"word_chars", va);
+			if(word_chars)
+				continue;
 		}
 			
 		if(va)
 			g_free(va);
-/*
-		layout_view_tree = read_bool_option(f, option,
-			"layout_view_as_tree", value, layout_view_tree);
-		max_window_size = read_int_option(f, option,
-			"max_window_size", value, max_window_size);
-*/
 	}
 	if(fontname){
-		int len;
-	
-		len=(strlen(fontname)>sizeof(cf->fontname))?sizeof(cf->fontname):strlen(fontname);
-		memset(cf->fontname,0,sizeof(cf->fontname));
+		len=strlen(fontname);
+		size=sizeof(cf->fontname);
+		len=(len>size)?size:len;
+		memset(cf->fontname,0,size);
 		strncpy(cf->fontname,fontname,len);
 		g_free(fontname);
 	}
 	if(charset){
-		int len;
-
-		len=(strlen(charset)>sizeof(cf->charset))?sizeof(cf->charset):strlen(charset);
-		memset(cf->charset,0,sizeof(cf->charset));
+		len=strlen(charset);
+		size=sizeof(cf->charset);
+		len=(len>size)?size:len;
+		memset(cf->charset,0,size);
 		strncpy(cf->charset,charset,len);
 		g_free(charset);
 	}
-	if((fg_red !=-1) &&
-			(fg_green !=-1)	&&
-			(fg_blue !=-1) &&
-			(bg_red !=-1) &&
-			(bg_green !=-1) &&
-			(bg_blue !=-1)) { 
-		cf->fg_red=fg_red;
-		cf->fg_green=fg_green;
-		cf->fg_blue=fg_blue;
-		cf->bg_red=bg_red;
-		cf->bg_green=bg_green;
-		cf->bg_blue=bg_blue;
+	if(word_chars){
+		len=strlen(word_chars);
+		size=sizeof(cf->word_chars);
+		len=(len>size)?size:len;
+		memset(cf->word_chars,0,size);
+		strncpy(cf->word_chars,word_chars,len);
+		g_free(word_chars);
 	}
 	
 	fclose(f);
