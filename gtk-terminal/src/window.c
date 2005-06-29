@@ -22,6 +22,8 @@ MainWin *create_main_window(void)
 	GtkWidget *vbox;
  	GtkWidget *menubar;
       	GtkUIManager *ui;
+	GtkWidget *hbox;
+	GtkWidget *scrollbar;
  	GtkWidget *vt;
  	GdkPixbuf *icon=NULL,*transparent ;
 	MainWin *mw = &mainwin; 
@@ -82,6 +84,8 @@ MainWin *create_main_window(void)
 	menubar =gtk_ui_manager_get_widget (ui, "/MenuBar");
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, FALSE, 0);
 	
+	hbox = gtk_hbox_new(FALSE,0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
 	vt = vte_terminal_new();
 	gtk_widget_set_double_buffered(vt, TRUE);
 	mw->menubar = menubar;
@@ -132,7 +136,9 @@ MainWin *create_main_window(void)
 		g_free(shell);
 	}
 	g_free(home_dir);
-	gtk_box_pack_start(GTK_BOX(vbox), vt, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), vt, TRUE, TRUE, 0);
+	scrollbar = gtk_vscrollbar_new((VTE_TERMINAL(vt))->adjustment);
+	gtk_box_pack_start (GTK_BOX (hbox), scrollbar, FALSE, TRUE, 0);
 
 	g_signal_connect(G_OBJECT(vt), "window-title-changed",
 			 G_CALLBACK(window_title_changed), window);
