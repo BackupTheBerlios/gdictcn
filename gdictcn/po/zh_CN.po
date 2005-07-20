@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-06-13 16:37+0800\n"
+"POT-Creation-Date: 2005-07-18 11:27+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,12 +21,12 @@ msgid "dict.cn gtk client"
 msgstr "dict.cn gtk+ 客户端"
 
 #: src/interface.c:62
-msgid "_Dictionary"
-msgstr "字典"
+msgid "_File"
+msgstr "文件"
 
 #: src/interface.c:69
-msgid "dict.cn"
-msgstr ""
+msgid "Always on top"
+msgstr "总在最前"
 
 #: src/interface.c:83
 msgid "_Help"
@@ -39,3 +39,9 @@ msgstr "关于"
 #: src/interface.c:99
 msgid "word : "
 msgstr "单词"
+
+#~ msgid "_Setting"
+#~ msgstr "设置"
+
+#~ msgid "_Dictionary"
+#~ msgstr "字典"

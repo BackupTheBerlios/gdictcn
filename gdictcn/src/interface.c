@@ -29,7 +29,7 @@ create_window1 (void)
   GtkWidget *menubar1;
   GtkWidget *menuitem1;
   GtkWidget *menuitem1_menu;
-  GtkWidget *dictcn;
+  GtkWidget *alwaystop;
   GtkWidget *separatormenuitem1;
   GtkWidget *quit;
   GtkWidget *menuitem2;
@@ -59,17 +59,17 @@ create_window1 (void)
   gtk_widget_show (menubar1);
   gtk_box_pack_start (GTK_BOX (vbox1), menubar1, FALSE, FALSE, 0);
 
-  menuitem1 = gtk_menu_item_new_with_mnemonic (_("_Dictionary"));
+  menuitem1 = gtk_menu_item_new_with_mnemonic (_("_File"));
   gtk_widget_show (menuitem1);
   gtk_container_add (GTK_CONTAINER (menubar1), menuitem1);
 
   menuitem1_menu = gtk_menu_new ();
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem1), menuitem1_menu);
 
-  dictcn = gtk_check_menu_item_new_with_mnemonic (_("dict.cn"));
-  gtk_widget_show (dictcn);
-  gtk_container_add (GTK_CONTAINER (menuitem1_menu), dictcn);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (dictcn), TRUE);
+  alwaystop = gtk_check_menu_item_new_with_mnemonic (_("Always on top"));
+  gtk_widget_show (alwaystop);
+  gtk_container_add (GTK_CONTAINER (menuitem1_menu), alwaystop);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (alwaystop), FALSE);
 
   separatormenuitem1 = gtk_separator_menu_item_new ();
   gtk_widget_show (separatormenuitem1);
@@ -133,9 +133,11 @@ create_window1 (void)
   gtk_widget_show (statusbar1);
   gtk_box_pack_start (GTK_BOX (vbox1), statusbar1, FALSE, FALSE, 0);
 
+  dictdata.window=window1;
   dictdata.entry=entry1;
   dictdata.text=text_view;
   dictdata.statusbar=statusbar1;
+  dictdata.always_on_top=FALSE;
 
   g_signal_connect_after ((gpointer) window1, "destroy",
                           G_CALLBACK (gtk_main_quit),
@@ -144,9 +146,9 @@ create_window1 (void)
   g_signal_connect (GTK_OBJECT(entry1), "activate",
                     G_CALLBACK (find_cb),
                     &dictdata);
-  g_signal_connect ((gpointer) dictcn, "activate",
-                    G_CALLBACK (on_dictcn_activate),
-                    NULL);
+  g_signal_connect ((gpointer) alwaystop , "activate",
+                    G_CALLBACK (on_alwaystop_activate),
+                    &dictdata);
   g_signal_connect ((gpointer) quit, "activate",
                     G_CALLBACK (gtk_main_quit),
                     NULL);
@@ -156,6 +158,15 @@ create_window1 (void)
   g_signal_connect ((gpointer) button1, "clicked",
                     G_CALLBACK (find_cb),
                     &dictdata);
+    	g_signal_connect (text_view, "key-press-event", 
+			G_CALLBACK (key_press_event),NULL);
+      g_signal_connect (text_view, "event-after", 
+			G_CALLBACK (event_after),NULL);
+      g_signal_connect (text_view, "motion-notify-event", 
+			G_CALLBACK (motion_notify_event), NULL);
+      g_signal_connect (text_view, "visibility-notify-event", 
+			G_CALLBACK (visibility_notify_event), NULL);
+
   gtk_window_add_accel_group (GTK_WINDOW (window1), accel_group);
 
   return window1;
